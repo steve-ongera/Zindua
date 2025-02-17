@@ -1,0 +1,125 @@
+{% load static %}
+
+<!-- footer.html -->
+<footer class="jumia-footer">
+  <div class="container">
+    <!-- Newsletter subscription -->
+    <div class="newsletter-section">
+      <div class="newsletter-container">
+        <h3>NEW TO JUMIA?</h3>
+        <p>Subscribe to get updates on our latest offers!</p>
+        <form class="newsletter-form" action="#" method="POST">
+          {% csrf_token %}
+          <div class="email-input-container">
+            <div class="email-input-wrapper">
+              <i class="fa fa-envelope"></i>
+              <input type="email" name="email" placeholder="Enter E-mail Address" required>
+            </div>
+            <button type="submit" class="subscribe-btn">Subscribe</button>
+          </div>
+        </form>
+        <div class="app-download">
+          <p>DOWNLOAD JUMIA FREE APP</p>
+          <div class="app-buttons">
+            <a href="#" class="app-store"><img src="{% static 'images/apple-store.png' %}" alt="App Store"></a>
+            <a href="#" class="play-store"><img src="{% static 'images/google-play.png' %}" alt="Google Play"></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer links sections -->
+    <div class="footer-links">
+      <div class="footer-column">
+        <h4>NEED HELP?</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">How to Shop</a></li>
+          <li><a href="#">Delivery Timelines</a></li>
+          <li><a href="#">Report a Product</a></li>
+          <li><a href="#">Dispute Resolution Policy</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>ABOUT JUMIA</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Jumia Careers</a></li>
+          <li><a href="#">Jumia Express</a></li>
+          <li><a href="#">Terms and Conditions</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Authentic Products</a></li>
+          <li><a href="#">Jumia Credit</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>MAKE MONEY WITH JUMIA</h4>
+        <ul>
+          <li><a href="#">Sell on Jumia</a></li>
+          <li><a href="#">Vendor Hub</a></li>
+          <li><a href="#">Become a Sales Consultant</a></li>
+          <li><a href="#">Become a Logistics Service Partner</a></li>
+          <li><a href="#">Jumia University</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>JUMIA INTERNATIONAL</h4>
+        <div class="international-links">
+          <div class="links-group">
+            <ul>
+              <li><a href="#">Algeria</a></li>
+              <li><a href="#">Egypt</a></li>
+              <li><a href="#">Ghana</a></li>
+              <li><a href="#">Kenya</a></li>
+              <li><a href="#">Morocco</a></li>
+              <li><a href="#">Nigeria</a></li>
+            </ul>
+          </div>
+          <div class="links-group">
+            <ul>
+              <li><a href="#">Ivory Coast</a></li>
+              <li><a href="#">Senegal</a></li>
+              <li><a href="#">Tunisia</a></li>
+              <li><a href="#">Uganda</a></li>
+              <li><a href="#">Cameroon</a></li>
+              <li><a href="#">Tanzania</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Social media and payment methods -->
+    <div class="footer-bottom">
+      <div class="social-section">
+        <h4>JOIN US ON</h4>
+        <div class="social-icons">
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+        </div>
+      </div>
+
+      <div class="payment-section">
+        <h4>PAYMENT METHODS</h4>
+        <div class="payment-icons">
+          <img src="{% static 'images/visa.png' %}" alt="Visa">
+          <img src="{% static 'images/mastercard.png' %}" alt="Mastercard">
+          <img src="{% static 'images/mpesa.png' %}" alt="MPesa">
+          <img src="{% static 'images/jumia-pay.png' %}" alt="Jumia Pay">
+        </div>
+      </div>
+    </div>
+
+    <!-- Copyright -->
+    <div class="copyright">
+      <p>© {% now "Y" %} Jumia. All rights reserved</p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,68 @@
+{% load static %}
+
+<!-- navbar.html -->
+<nav class="navbar">
+  <div class="container">
+    <div class="top-nav">
+      <div class="left-section">
+        <a href="{% url 'home' %}" class="logo">
+          <img src="{% static 'images/jumia_logo.png' %}" alt="Jumia" height="25">
+        </a>
+      </div>
+      <div class="center-section">
+        <form class="search-form" action="{% url 'search' %}" method="GET">
+          <div class="search-wrapper">
+            <input type="text" name="q" placeholder="Search products, brands and categories" class="search-input">
+            <button type="submit" class="search-button">SEARCH</button>
+          </div>
+        </form>
+      </div>
+      <div class="right-section">
+        <div class="nav-item account-dropdown">
+          <a href="{% url 'account' %}">
+            <i class="fa fa-user"></i>
+            <span>Account</span>
+            <i class="fa fa-angle-down"></i>
+          </a>
+        </div>
+        <div class="nav-item help-dropdown">
+          <a href="#">
+            <i class="fa fa-question-circle"></i>
+            <span>Help</span>
+            <i class="fa fa-angle-down"></i>
+          </a>
+        </div>
+        <div class="nav-item cart">
+          <a href="{% url 'cart' %}">
+            <i class="fa fa-shopping-cart"></i>
+            <span>Cart</span>
+            {% if cart_items %}
+            <span class="cart-count">{{ cart_items }}</span>
+            {% endif %}
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="categories-dropdown">
+        <a href="#">
+          <i class="fa fa-bars"></i>
+          <span>Categories</span>
+          <i class="fa fa-angle-down"></i>
+        </a>
+      </div>
+      <div class="main-navigation">
+        <ul>
+          {% for category in main_categories %}
+          <li>
+            <a href="#">{{ category.name }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="seller-section">
+        <a href="#">Sell on Jumia</a>
+      </div>
+    </div>
+  </div>
+</nav>

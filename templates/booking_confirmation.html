@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Booking Confirmation - Mamafua{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-lg shadow-md p-8">
+        <div class="text-center mb-6">
+            <svg class="w-16 h-16 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <h1 class="text-3xl font-bold text-gray-800">Booking Confirmed!</h1>
+            <p class="text-gray-600 mt-2">Booking ID: #{{ booking.id }}</p>
+        </div>
+
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Booking Details</h2>
+            <div class="border rounded-lg divide-y">
+                <div class="grid grid-cols-2 gap-4 p-4">
+                    <p class="text-gray-600">Service Provider:</p>
+                    <p class="font-semibold">{{ booking.service_provider.user.username }}</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 p-4">
+                    <p class="text-gray-600">Service Type:</p>
+                    <p class="font-semibold">{{ booking.service_provider.category.name }}</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 p-4">
+                    <p class="text-gray-600">Date & Time:</p>
+                    <p class="font-semibold">{{ booking.service_date|date:"F j, Y, g:i a" }}</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 p-4">
+                    <p class="text-gray-600">Location:</p>
+                    <p class="font-semibold">{{ booking.location }}</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 p-4">
+                    <p class="text-gray-600">Status:</p>
+                    <p class="font-semibold">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                            {{ booking.status }}
+                        </span>
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 p-4">
+                    <p class="text-gray-600">Total Price:</p>
+                    <p class="font-semibold text-lg text-blue-600">KSh {{ booking.total_price }}</p>
+                </div>
+
+                {% if booking.special_instructions %}
+                <div class="p-4">
+                    <p class="text-gray-600 mb-2">Special Instructions:</p>
+                    <p class="text-gray-800">{{ booking.special_instructions }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg p-4 mb-8">
+            <h3 class="font-semibold text-lg mb-2">Next Steps</h3>
+            <ul class="list-disc list-inside text-gray-600 space-y-2">
+                <li>The service provider will contact you shortly to confirm the booking</li>
+                <li>Please ensure someone is available at the location during the scheduled time</li>
+                <li>You can track the status of your booking in your profile</li>
+                <li>Payment will be collected after the service is completed</li>
+            </ul>
+        </div>
+
+        <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+            <a href="{% url 'profile' %}" 
+               class="inline-block bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 text-center">
+                View My Bookings
+            </a>
+            <a href="{% url 'home' %}" 
+               class="inline-block bg-gray-200 text-gray-700 py-2 px-6 rounded-lg hover:bg-gray-300 text-center">
+                Back to Home
+            </a>
+        </div>
+    </div>
+
+    {% if not booking.payment %}
+    <div class="bg-white rounded-lg shadow-md p-6 mt-6">
+        <h2 class="text-xl font-semibold mb-4">Payment Options</h2>
+        <div class="space-y-4">
+            <button class="w-full flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
+                <span class="font-semibold">Pay with M-Pesa</span>
+                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+            <button class="w-full flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
+                <span class="font-semibold">Pay with Card</span>
+                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

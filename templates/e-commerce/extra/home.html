@@ -1,0 +1,528 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jumia Clone</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<style>
+    /* Main Banner Container - Using Flexbox for layout */
+.main-banner-container {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: 15px;
+    margin: 20px 0;
+    position: relative;
+}
+
+/* Category Sidebar */
+.categories-sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+.categories-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.categories-sidebar li {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.categories-sidebar li:hover {
+    background-color: #f9f9f9;
+}
+
+.categories-sidebar i {
+    margin-right: 10px;
+    color: #666;
+    width: 20px;
+    text-align: center;
+}
+
+/* Main Banner */
+.main-banner {
+    flex: 1;
+    display: flex;
+    background-color: #f68b1e;
+    border-radius: 4px;
+    overflow: hidden;
+    color: white;
+}
+
+.promotional-text {
+    flex: 1;
+    padding: 30px;
+}
+
+.promotional-image {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.promotional-image img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Help Sidebar */
+.help-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.help-center, .top-deals, .sell-on-jumia {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 10px 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.help-icon, .deals-icon, .sell-icon {
+    margin-right: 15px;
+    font-size: 20px;
+    color: #f68b1e;
+}
+
+.whatsapp-info {
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-top: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .main-banner-container {
+        flex-wrap: wrap;
+    }
+    
+    .categories-sidebar {
+        width: 100%;
+        order: 1;
+    }
+    
+    .main-banner {
+        width: 100%;
+        order: 2;
+    }
+    
+    .help-sidebar {
+        width: 100%;
+        order: 3;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .help-center, .top-deals, .sell-on-jumia {
+        flex: 1 0 30%;
+    }
+    
+    .whatsapp-info {
+        flex: 0 0 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-banner {
+        flex-direction: column;
+    }
+    
+    .help-center, .top-deals, .sell-on-jumia {
+        flex: 0 0 100%;
+    }
+}
+</style>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        
+
+        <!-- Main Banner and Right Help Box -->
+        <div class="main-banner-container">
+
+            <!-- Left Categories Menu -->
+            <div class="categories-sidebar">
+                <ul>
+                    <li><i class="fas fa-store"></i> Official Stores</li>
+                    <li><i class="fas fa-mobile-alt"></i> Phones & Tablets</li>
+                    <li><i class="fas fa-tv"></i> TV & Audio</li>
+                    <li><i class="fas fa-blender"></i> Appliances</li>
+                    <li><i class="fas fa-pump-soap"></i> Health & Beauty</li>
+                    <li><i class="fas fa-home"></i> Home & Office</li>
+                    <li><i class="fas fa-tshirt"></i> Fashion</li>
+                    <li><i class="fas fa-laptop"></i> Computing</li>
+                    <li><i class="fas fa-shopping-basket"></i> Supermarket</li>
+                    <li><i class="fas fa-baby"></i> Baby Products</li>
+                    <li><i class="fas fa-futbol"></i> Sporting Goods</li>
+                    <li><i class="fas fa-ellipsis-h"></i> Other categories</li>
+                </ul>
+            </div>
+
+
+            <div class="main-banner">
+                <div class="promotional-text">
+                    <h1>Step up Kenya!!</h1>
+                    <h3>Poco</h3>
+                    <p>C75, 6.88", 128GB + 6GB</p>
+                    <div class="price-tag">
+                        <span class="current-price">KSh 13,580</span>
+                        <span class="original-price">18,000</span>
+                    </div>
+                    <button class="shop-now-btn">SHOP NOW <i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="promotional-image">
+                    <img src="{% static 'images/phone-banner.jpg' %}" alt="Poco Smartphone">
+                </div>
+            </div>
+            
+            <div class="help-sidebar">
+                <div class="help-center">
+                    <div class="help-icon"><i class="fas fa-question-circle"></i></div>
+                    <div class="help-text">
+                        <h4>HELP CENTER</h4>
+                        <p>Guide To Customer Care</p>
+                    </div>
+                </div>
+                <div class="top-deals">
+                    <div class="deals-icon"><i class="fas fa-fire"></i></div>
+                    <div class="deals-text">
+                        <h4>TOP DEALS</h4>
+                        <p>LIVE NOW</p>
+                    </div>
+                </div>
+                <div class="sell-on-jumia">
+                    <div class="sell-icon"><i class="fas fa-store"></i></div>
+                    <div class="sell-text">
+                        <h4>SELL ON JUMIA</h4>
+                        <p>Millions Of Visitors</p>
+                    </div>
+                </div>
+                <div class="whatsapp-info">
+                    <h4>Call or WhatsApp</h4>
+                    <h3>0711 011 011</h3>
+                    <p>to order</p>
+                    <button class="shop-now-white-btn">SHOP NOW <i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flash Sales Section -->
+        <section class="flash-sales">
+            <div class="section-header">
+                <div class="flash-title">
+                    <i class="fas fa-bolt"></i>
+                    <h2>Flash Sales | Live Now</h2>
+                </div>
+                <div class="timer-container">
+                    <span class="timer-label">Time Left: </span>
+                    <div class="timer">
+                        <span class="time-box">00h</span> : 
+                        <span class="time-box">18m</span> : 
+                        <span class="time-box">30s</span>
+                    </div>
+                </div>
+                <div class="see-all">
+                    <a href="#">See All <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            
+            <div class="products-slider">
+                <div class="product-card">
+                    <div class="discount-tag">-10%</div>
+                    <img src="{% static 'images/product1.jpg' %}" alt="NIVEA UV Face Shine Control">
+                    <div class="product-info">
+                        <h3>NIVEA UV Face Shine Control Sunscreen...</h3>
+                        <div class="price">
+                            <span class="current-price">KSh 940</span>
+                            <span class="original-price">KSh 1,049</span>
+                        </div>
+                        <div class="items-left">1658 items left</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="discount-tag">-8%</div>
+                    <img src="{% static 'images/product2.jpg' %}" alt="Jameson Irish Whiskey">
+                    <div class="product-info">
+                        <h3>Jameson Jameson Irish Whiskey - 1 Litre</h3>
+                        <div class="price">
+                            <span class="current-price">KSh 2,799</span>
+                            <span class="original-price">KSh 3,049</span>
+                        </div>
+                        <div class="items-left">771 items left</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="discount-tag">-14%</div>
+                    <img src="{% static 'images/product3.jpg' %}" alt="NIVEA Perfect & Radiant">
+                    <div class="product-info">
+                        <h3>NIVEA Perfect & Radiant Luminous630® Anti Dark...</h3>
+                        <div class="price">
+                            <span class="current-price">KSh 2,274</span>
+                            <span class="original-price">KSh 2,649</span>
+                        </div>
+                        <div class="items-left">14 items left</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="discount-tag">-31%</div>
+                    <img src="{% static 'images/product4.jpg' %}" alt="Vision HTC43085 TV">
+                    <div class="product-info">
+                        <h3>Vision HTC43085 - 43" - Smart Android TV...</h3>
+                        <div class="price">
+                            <span class="current-price">KSh 19,670</span>
+                            <span class="original-price">KSh 28,499</span>
+                        </div>
+                        <div class="items-left">367 items left</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="discount-tag">-32%</div>
+                    <img src="{% static 'images/product5.jpg' %}" alt="Haier 7.5kg Twin Tub">
+                    <div class="product-info">
+                        <h3>Haier 7.5Kg Twin Tub Washing Machine HWM-75AS</h3>
+                        <div class="price">
+                            <span class="current-price">KSh 18,861</span>
+                            <span class="original-price">KSh 27,831</span>
+                        </div>
+                        <div class="items-left">117 items left</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="discount-tag">-13%</div>
+                    <img src="{% static 'images/product6.jpg' %}" alt="Poco C75">
+                    <div class="product-info">
+                        <h3>Poco C75, 6.88", 128GB + 8GB RAM, 50MP...</h3>
+                        <div class="price">
+                            <span class="current-price">KSh 14,016</span>
+                            <span class="original-price">KSh 16,100</span>
+                        </div>
+                        <div class="items-left">245 items left</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sponsored Products Section -->
+        <section class="sponsored-products">
+            <h2>Sponsored products</h2>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="discount-tag">-20%</div>
+                    <img src="{% static 'images/product7.jpg' %}" alt="Lyons BQ-2801">
+                    <div class="product-info">
+                        <h3>Lyons BQ-2801 Electric Oven - 28L - Black</h3>
+                        <div class="price">
+                            <span class="current-price">KSh 3,899</span>
+                            <span class="original-price">KSh 4,899</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="discount-tag">-30%</div>
+                    <img src="{% static 'images/product8.jpg' %}" alt="VERBMAN Loquid Perfume">
+                    <div class="product-info">
+                        <h3>VERBMAN Loquid Perfume For Men-100ml</h3>
+                        <div class="price">
+                            <span class="current-price">KSh 1,230</span>
+                            <span class="original-price">KSh 1,756</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="discount-tag">-25%</div>
+                    <img src="{% static 'images/product9.jpg' %}" alt="Garnier AHA+BHA Cream">
+                    <div class="product-info">
+                        <h3>Garnier AHA+BHA Cream Fade Dark Spots - 45g</h3>
+                        <div class="price">
+                            <span class="current-price">KSh 919</span>
+                            <span class="original-price">KSh 1,229</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="discount-tag">-48%</div>
+                    <img src="{% static 'images/product10.jpg' %}" alt="Fashion Women Solid Color">
+                    <div class="product-info">
+                        <h3>Fashion Women Solid Color Pregnant Dress</h3>
+                        <div class="price">
+                            <span class="current-price">KSh 1,149</span>
+                            <span class="original-price">KSh 2,209</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="discount-tag">-49%</div>
+                    <img src="{% static 'images/product11.jpg' %}" alt="Fashion Men's Elegant Watch">
+                    <div class="product-info">
+                        <h3>Fashion Men's Elegant Stainless Steel Watch</h3>
+                        <div class="price">
+                            <span class="current-price">KSh 1,980</span>
+                            <span class="original-price">KSh 3,845</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="discount-tag">-60%</div>
+                    <img src="{% static 'images/product12.jpg' %}" alt="Mosquito Solar Powered Lamp">
+                    <div class="product-info">
+                        <h3>Mosquito Solar Powered Lamp Zapper Killer</h3>
+                        <div class="price">
+                            <span class="current-price">KSh 2,400</span>
+                            <span class="original-price">KSh 6,000</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Shop By Category Section -->
+        <section class="shop-by-category">
+            <h2>Shop By Category</h2>
+            <div class="category-grid">
+                <div class="category-item">
+                    <div class="category-image flash-sales-icon"></div>
+                    <span>Flash Sales</span>
+                </div>
+                <div class="category-item">
+                    <div class="category-image phone-deals-icon"></div>
+                    <span>Phone Deals</span>
+                </div>
+                <div class="category-item">
+                    <div class="category-image computing-accessories-icon"></div>
+                    <span>Computing Accessories</span>
+                </div>
+                <div class="category-item">
+                    <div class="category-image new-arrivals-icon"></div>
+                    <span>New Arrivals</span>
+                </div>
+                <div class="category-item">
+                    <div class="category-image extra-off-icon"></div>
+                    <span>Extra 15% Off</span>
+                </div>
+                <div class="category-item">
+                    <div class="category-image earn-money-icon"></div>
+                    <span>Earn Money NOW</span>
+                </div>
+                <div class="category-item">
+                    <div class="category-image laptop-deals-icon"></div>
+                    <span>Laptop Deals</span>
+                </div>
+                <div class="category-item">
+                    <div class="category-image deals-soundbars-icon"></div>
+                    <span>Deals On Soundbars</span>
+                </div>
+                <div class="category-item">
+                    <div class="category-image small-appliances-icon"></div>
+                    <span>Small Appliances</span>
+                </div>
+                <div class="category-item">
+                    <div class="category-image home-decor-icon"></div>
+                    <span>Home Decor</span>
+                </div>
+                <div class="category-item">
+                    <div class="category-image supermarket-deals-icon"></div>
+                    <span>Supermarket Deals</span>
+                </div>
+                <div class="category-item">
+                    <div class="category-image beauty-essentials-icon"></div>
+                    <span>Beauty Essentials</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Finds Section -->
+        <section class="daily-finds">
+            <div class="section-header">
+                <h2>Daily Finds | Live Now</h2>
+                <div class="see-all">
+                    <a href="#">See All <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <img src="{% static 'images/product13.jpg' %}" alt="XIAOMI Redmi A3s">
+                    <div class="product-info">
+                        <h3>XIAOMI Redmi A3s, 6.71", 64GB + 3GB RAM...</h3>
+                        <div class="price">
+                            <span class="current-price">KSh 9,390</span>
+                            <span class="original-price">KSh 10,999</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="discount-tag">-32%</div>
+                    <img src="{% static 'images/product14.jpg' %}" alt="Smartwatch Business">
+                    <div class="product-info">
+                        <h3>Smartwatch Business Bluetooth Call Smart Watch</h3>
+                        <div class="price">
+                            <span class="current-price">KSh 3,747</span>
+                            <span class="original-price">KSh 5,499</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- More product cards can be added here -->
+            </div>
+        </section>
+
+        <!-- Top Selling Items Section -->
+        <section class="top-selling">
+            <div class="section-header">
+                <h2>Top selling items</h2>
+                <div class="see-all">
+                    <a href="#">See All <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="discount-tag">-47%</div>
+                    <img src="{% static 'images/product19.jpg' %}" alt="Infinix Hot 30 Play">
+                    <div class="product-info">
+                        <h3>Infinix Hot 30 Play, 6.78", 128GB + 4GB RAM...</h3>
+                        <div class="price">
+                            <span class="current-price">KSh 13,999</span>
+                            <span class="original-price">KSh 26,499</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="discount-tag">-31%</div>
+                    <img src="{% static 'images/product20.jpg' %}" alt="Vision HTC43085 - 43">
+                    <div class="product-info">
+                        <h3>Vision HTC43085 - 43" - Smart Android TV...</h3>
+                        <div class="price">
+                            <span class="current-price">KSh 19,670</span>
+                            <span class="original-price">KSh 28,499</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- More product cards can be added here -->
+            </div>
+        </section>
+    </main>
+</body>
+</html>
