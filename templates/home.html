@@ -274,16 +274,16 @@
             <div class="products-slider">
                 {% for product in top_sold_products %}
                 <div class="product-card">
-                    <div class="discount-tag">-10%</div>
+                    <div class="discount-tag">-{{ product.discount_percentage}}%</div>
                     <a href="{% url 'product_detail' product.slug %}">
                         <img src="{{ product.image.url }}" alt="{{ product.name }}">
                         <div class="product-info">
                             <h3>{{ product.name }}</h3>
                             <div class="price">
                                 <span class="current-price">KSh {{ product.price }}</span>
-                                <span class="original-price">KSh 1,049</span>
+                                <span class="original-price">KSh {{ product.original_price}}</span>
                             </div>
-                            <div class="items-left">1658 items left</div>
+                            <div class="items-left">{{ product.stock}} items left</div>
                         </div>
                     </a>    
                 </div>
@@ -295,72 +295,22 @@
         <section class="sponsored-products">
             <h2>Sponsored products</h2>
             <div class="products-grid">
+                {% for product in sponsored_products %}
                 <div class="product-card">
-                    <div class="discount-tag">-20%</div>
-                    <img src="{% static 'images/product7.jpg' %}" alt="Lyons BQ-2801">
-                    <div class="product-info">
-                        <h3>Lyons BQ-2801 Electric Oven - 28L - Black</h3>
-                        <div class="price">
-                            <span class="current-price">KSh 3,899</span>
-                            <span class="original-price">KSh 4,899</span>
+                    <div class="discount-tag">-{{ product.discount_percentage}}%</div>
+                    <a href="{% url 'product_detail' product.slug %}">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        <div class="product-info">
+                            <h3>{{ product.name }}</h3>
+                            <div class="price">
+                                <span class="current-price">ksh {{ product.price }}</span>
+                                <span class="original-price">ksh {{ product.original_price }}</span>
+                            </div>
                         </div>
-                    </div>
+                    </a>    
                 </div>
-                <div class="product-card">
-                    <div class="discount-tag">-30%</div>
-                    <img src="{% static 'images/product8.jpg' %}" alt="VERBMAN Loquid Perfume">
-                    <div class="product-info">
-                        <h3>VERBMAN Loquid Perfume For Men-100ml</h3>
-                        <div class="price">
-                            <span class="current-price">KSh 1,230</span>
-                            <span class="original-price">KSh 1,756</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="discount-tag">-25%</div>
-                    <img src="{% static 'images/product9.jpg' %}" alt="Garnier AHA+BHA Cream">
-                    <div class="product-info">
-                        <h3>Garnier AHA+BHA Cream Fade Dark Spots - 45g</h3>
-                        <div class="price">
-                            <span class="current-price">KSh 919</span>
-                            <span class="original-price">KSh 1,229</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="discount-tag">-48%</div>
-                    <img src="{% static 'images/product10.jpg' %}" alt="Fashion Women Solid Color">
-                    <div class="product-info">
-                        <h3>Fashion Women Solid Color Pregnant Dress</h3>
-                        <div class="price">
-                            <span class="current-price">KSh 1,149</span>
-                            <span class="original-price">KSh 2,209</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="discount-tag">-49%</div>
-                    <img src="{% static 'images/product11.jpg' %}" alt="Fashion Men's Elegant Watch">
-                    <div class="product-info">
-                        <h3>Fashion Men's Elegant Stainless Steel Watch</h3>
-                        <div class="price">
-                            <span class="current-price">KSh 1,980</span>
-                            <span class="original-price">KSh 3,845</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="discount-tag">-60%</div>
-                    <img src="{% static 'images/product12.jpg' %}" alt="Mosquito Solar Powered Lamp">
-                    <div class="product-info">
-                        <h3>Mosquito Solar Powered Lamp Zapper Killer</h3>
-                        <div class="price">
-                            <span class="current-price">KSh 2,400</span>
-                            <span class="original-price">KSh 6,000</span>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
+                
             </div>
         </section>
 <style>

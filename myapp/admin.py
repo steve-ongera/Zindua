@@ -79,7 +79,7 @@ class PaymentAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
+    list_display = ('name', 'description', 'slug')
     search_fields = ('name',)
     list_filter = ('name',)
 

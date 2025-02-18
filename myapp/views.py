@@ -49,6 +49,7 @@ def custom_logout(request):
 def home_view(request):
     categories = ServiceCategory.objects.all()
     top_providers = ServiceProvider.objects.order_by('-average_rating')[:8]
+    sponsored_products = Product.objects.filter(is_sponsored=True)[:10]  # Example, modify as needed
 
     product_categories = Category.objects.all()
     top_sold_products = Product.objects.order_by('-stock')[:10]  # Example: Replace 'stock' with actual sales tracking field
@@ -56,7 +57,7 @@ def home_view(request):
     context = {
         'categories': categories,
         'top_providers': top_providers,
-
+        'sponsored_products': sponsored_products,
         'product_categories': product_categories,
         'top_sold_products': top_sold_products,
     }

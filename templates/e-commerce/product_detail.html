@@ -36,7 +36,7 @@
       <div class="thumbnails">
         {% for image in product.product_images.all %}
         <div class="thumbnail {% if forloop.first %}active{% endif %}" data-image-url="{{ image.url }}">
-          <img src="{{ image.url }}" alt="{{ product.name }} - Image {{ forloop.counter }}">
+          <img src="{{ image.image.url }}" alt="{{ product.name }} - Image {{ forloop.counter }}">
         </div>
         {% endfor %}
       </div>

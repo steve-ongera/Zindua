@@ -45,11 +45,31 @@
     </div>
     <div class="bottom-nav">
       <div class="categories-dropdown">
-        <a href="#">
+        <a href="#" class="dropdown-trigger">
           <i class="fa fa-bars"></i>
           <span>Categories</span>
           <i class="fa fa-angle-down"></i>
         </a>
+        <div class="dropdown-menu">
+          <ul>
+            {% for category in categories %}
+            <li>
+              {% if category.slug %}
+                <a href="{% url 'category' slug=category.slug %}">
+                 
+                  {{ category.name }}
+                </a>
+              {% else %}
+                <!-- Optional fallback message -->
+                <span>{{ category.name }} (No valid slug)</span>
+              {% endif %}
+            </li>
+          {% empty %}
+            <li><a href="#">No categories available</a></li>
+          {% endfor %}
+
+          </ul>
+        </div>
       </div>
       <div class="main-navigation">
         <ul>

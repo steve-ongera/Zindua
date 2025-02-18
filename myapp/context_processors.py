@@ -20,3 +20,12 @@ def navbar_context(request):
         'main_categories': main_categories,
         'cart_items': cart_items
     }
+
+
+from myapp.models import Category
+
+def categories_processor(request):
+    categories = Category.objects.all()
+    # Optional: Filter out categories with no slug
+    categories = categories.exclude(slug="")
+    return {'categories': categories}
