@@ -113,9 +113,13 @@ class OrderItemAdmin(admin.ModelAdmin):
 
 admin.site.register(Payment, PaymentAdmin)
 
-@admin.register(Brand)
-class BrandAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('name',)}
+
+
+class SubcategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category', 'slug')  # Customize the fields to display in the admin list view
+    prepopulated_fields = {'slug': ('name',)}  # Automatically generate the slug based on the name
+
+admin.site.register(Subcategory, SubcategoryAdmin)
 
 
 
@@ -126,3 +130,17 @@ class SellerAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('store_name',)}  # Auto-generate slug from store name
     list_filter = ('store_name',)  # Add filters for quick filtering
 
+
+class ProductImageAdmin(admin.ModelAdmin):
+    list_display = ('product', 'image')  # Display product and image in the admin list view
+    search_fields = ('product__name',)  # Enable search functionality by product name
+
+# Register ProductImage model with the admin site
+admin.site.register(ProductImage, ProductImageAdmin)
+
+class FeatureAdmin(admin.ModelAdmin):
+    list_display = ('product', 'feature')  # Display product and feature in the admin list view
+    search_fields = ('product__name', 'feature')  # Enable search functionality by product name and feature
+
+# Register Feature model with the admin site
+admin.site.register(Feature, FeatureAdmin)

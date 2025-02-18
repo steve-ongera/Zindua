@@ -74,7 +74,25 @@ def product_list_view(request):
 def product_detail_view(request, slug):
     product = get_object_or_404(Product, slug=slug)
     seller = product.seller  # Assuming Product has a ForeignKey to Seller
-    return render(request, 'e-commerce/product_detail.html', {'product': product, 'seller': seller})
+
+    # Get the features of the product
+    features = Feature.objects.filter(product=product)
+
+    # Get other related objects (optional, as needed)
+    related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:5]  # Adjust the filter based on your needs
+    sponsored_products = Product.objects.filter(is_sponsored=True)[:5]  # Example, modify as needed
+    recently_viewed = Product.objects.filter(id__in=request.session.get('recently_viewed', []))[:5]  # Modify based on your recent view logic
+    context = {
+        'product': product,
+        'features': features,
+        'related_products': related_products,
+        'sponsored_products': sponsored_products,
+        'recently_viewed': recently_viewed,
+        'seller': seller
+    }
+
+    return render(request, 'e-commerce/product_detail.html' , context)
+    
 
 
 def category_view(request, slug):

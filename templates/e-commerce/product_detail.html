@@ -22,7 +22,7 @@
     <!-- Product image and gallery -->
     <div class="product-gallery">
       <div class="main-image">
-        <img src="{{ product.main_image.url }}" alt="{{ product.name }}" id="main-product-image">
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" id="main-product-image">
         {% if product.is_official %}
         <div class="official-badge">OFFICIAL STORE</div>
         {% endif %}
@@ -68,7 +68,7 @@
       </div>
       
       <div class="product-price">
-        <div class="current-price">{{ product.currency }} {{ product.current_price|floatformat:0 }}</div>
+        <div class="current-price">{{ product.currency }} {{ product.price|floatformat:0 }}</div>
         {% if product.original_price %}
         <div class="original-price">{{ product.currency }} {{ product.original_price|floatformat:0 }}</div>
         <div class="discount">-{{ product.discount_percentage }}%</div>
@@ -184,25 +184,27 @@
         </div>
         
         <div class="key-features">
-          <h4>KEY FEATURES</h4>
-          <ul>
-            {% for feature in product.features %}
-            <li>{{ feature }}</li>
-            {% endfor %}
-          </ul>
+            <h4>KEY FEATURES</h4>
+            <ul>
+                {% for feature in product.features.all %}
+                <li>{{ feature.feature }}</li>
+                {% endfor %}
+            </ul>
         </div>
+      
         
         <div class="specifications">
           <h4>SPECIFICATIONS</h4>
           <div class="specs-table">
-            {% for spec in product.specifications %}
-            <div class="spec-row">
-              <div class="spec-label">{{ spec.label }}</div>
-              <div class="spec-value">{{ spec.value }}</div>
-            </div>
-            {% endfor %}
+              {% for spec in product.specifications.all %}
+              <div class="spec-row">
+                  <div class="spec-label">{{ spec.label }}</div>
+                  <div class="spec-value">{{ spec.value }}</div>
+              </div>
+              {% endfor %}
           </div>
-        </div>
+      </div>
+      
       </div>
     </div>
     
@@ -258,12 +260,12 @@
       <div class="product-card">
         <div class="product-card-image">
           <a href="{% url 'product_detail' related.slug %}">
-            <img src="{{ related.main_image.url }}" alt="{{ related.name }}">
+            <img src="{{ related.image.url }}" alt="{{ related.name }}">
           </a>
         </div>
         <div class="product-card-info">
           <a href="{% url 'product_detail' related.slug %}" class="product-card-name">{{ related.name }}</a>
-          <div class="product-card-price">{{ related.currency }} {{ related.current_price|floatformat:0 }}</div>
+          <div class="product-card-price">{{ related.currency }} {{ related.price|floatformat:0 }}</div>
           {% if related.original_price %}
           <div class="product-card-original-price">{{ related.currency }} {{ related.original_price|floatformat:0 }}</div>
           {% endif %}
