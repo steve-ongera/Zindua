@@ -246,7 +246,9 @@
                     <h4>Call or WhatsApp</h4>
                     <h3>0711 011 011</h3>
                     <p>to order</p>
-                    <button class="shop-now-white-btn">SHOP NOW <i class="fas fa-chevron-right"></i></button>
+                    <a href="/products/" class="shop-now-white-btn">
+                        SHOP NOW <i class="fas fa-chevron-right"></i>
+                    </a>                    
                 </div>
             </div>
         </div>
@@ -267,7 +269,7 @@
                     </div>
                 </div>
                 <div class="see-all">
-                    <a href="#">See All <i class="fas fa-chevron-right"></i></a>
+                    <a href="/products/">See All <i class="fas fa-chevron-right"></i></a>
                 </div>
             </div>
             
@@ -486,37 +488,38 @@
         <!-- Top Selling Items Section -->
         <section class="top-selling">
             <div class="section-header">
-                <h2>Top selling items</h2>
+                <h2>Top Selling Items</h2>
                 <div class="see-all">
-                    <a href="#">See All <i class="fas fa-chevron-right"></i></a>
+                    <a href="{% url 'product_list' %}">See All <i class="fas fa-chevron-right"></i></a>
                 </div>
             </div>
             <div class="products-grid">
+                {% for product in top_selling_products %}
                 <div class="product-card">
-                    <div class="discount-tag">-47%</div>
-                    <img src="{% static 'images/product19.jpg' %}" alt="Infinix Hot 30 Play">
+                    {% if product.discount_percentage %}
+                    <div class="discount-tag">-{{ product.discount_percentage }}%</div>
+                    {% endif %}
+                    <a href="{% url 'product_detail' product.slug %}">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    </a>
                     <div class="product-info">
-                        <h3>Infinix Hot 30 Play, 6.78", 128GB + 4GB RAM...</h3>
+                        <h3>{{ product.name|truncatechars:30 }}</h3>
                         <div class="price">
-                            <span class="current-price">KSh 13,999</span>
-                            <span class="original-price">KSh 26,499</span>
+                            <span class="current-price">KSh {{ product.price|floatformat:0 }}</span>
+                            {% if product.original_price %}
+                            <span class="original-price">KSh {{ product.original_price|floatformat:0 }}</span>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
-                <div class="product-card">
-                    <div class="discount-tag">-31%</div>
-                    <img src="{% static 'images/product20.jpg' %}" alt="Vision HTC43085 - 43">
-                    <div class="product-info">
-                        <h3>Vision HTC43085 - 43" - Smart Android TV...</h3>
-                        <div class="price">
-                            <span class="current-price">KSh 19,670</span>
-                            <span class="original-price">KSh 28,499</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- More product cards can be added here -->
+                {% empty %}
+                <p>No top-selling products available.</p>
+                {% endfor %}
             </div>
         </section>
+        <br>
+        <br>
+        
     </main>
 
 

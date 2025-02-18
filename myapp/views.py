@@ -53,19 +53,22 @@ def home_view(request):
 
     product_categories = Category.objects.all()
     top_sold_products = Product.objects.order_by('-stock')[:10]  # Example: Replace 'stock' with actual sales tracking field
-    
+    top_selling_products = Product.objects.order_by('-sales_count')[:6]  
+
+
     context = {
         'categories': categories,
         'top_providers': top_providers,
         'sponsored_products': sponsored_products,
         'product_categories': product_categories,
         'top_sold_products': top_sold_products,
+        'top_selling_products': top_selling_products,
     }
     return render(request, 'home.html', context)
 
 def product_list_view(request):
     products = Product.objects.all()
-    paginator = Paginator(products, 10)  # 10 products per page
+    paginator = Paginator(products, 12)  # 12 products per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -117,10 +120,24 @@ def product_detail_view(request, slug):
     
 
 
+from django.core.paginator import Paginator
+from django.shortcuts import render, get_object_or_404
+from .models import Category, Product
+
 def category_view(request, slug):
     category = get_object_or_404(Category, slug=slug)
     products = Product.objects.filter(category=category)
-    return render(request, 'category.html', {'category': category, 'products': products})
+
+    # Apply Pagination (12 Products Per Page)
+    paginator = Paginator(products, 12)  # 12 products per page
+    page_number = request.GET.get('page')
+    paginated_products = paginator.get_page(page_number)
+
+    return render(request, 'category.html', {
+        'category': category,
+        'products': paginated_products  # Use paginated products in template
+    })
+
 
 def brand_view(request, slug):
     brand = get_object_or_404(Brand, slug=slug)

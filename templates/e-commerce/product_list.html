@@ -1,3 +1,195 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category_name }} - Your Store{% endblock %}
+
+{% block extra_css %}
+
+
+{% endblock %}
+
+{% block content %}
+<div class="category-container">
+    <div class="sidebar">
+        <div class="category-section">
+            <h3>CATEGORY</h3>
+            <ul class="category-list">
+                <li><a href="{% url 'category' 'mobile-phones' %}" class="{% if category_slug == 'mobile-phones' %}active{% endif %}">Mobile Phones</a></li>
+                <li><a href="{% url 'category' 'smartphones' %}" class="{% if category_slug == 'smartphones' %}active{% endif %}">Smartphones</a>
+                    <ul class="subcategory-list">
+                        <li><a href="{% url 'category' 'android-phones' %}" class="{% if category_slug == 'android-phones' %}active{% endif %}">Android Phones</a></li>
+                        <li><a href="{% url 'category' 'ios-phones' %}" class="{% if category_slug == 'ios-phones' %}active{% endif %}">iOS Phones</a></li>
+                        <li><a href="{% url 'category' 'other-os' %}" class="{% if category_slug == 'other-os' %}active{% endif %}">Other Operating Systems</a></li>
+                        <li><a href="{% url 'category' 'windows-phones' %}" class="{% if category_slug == 'windows-phones' %}active{% endif %}">Windows Phones</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="brand-section">
+            <h3>BRAND</h3>
+            <div class="search-box">
+                <input type="text" placeholder="Search" class="brand-search">
+                <span class="search-icon">🔍</span>
+            </div>
+            <div class="brand-list">
+                <label><input type="checkbox" name="brand" value="xiaomi"> XIAOMI</label>
+                <label><input type="checkbox" name="brand" value="x-tigi"> X Tigi</label>
+                <label><input type="checkbox" name="brand" value="yeamuds"> yeamuds</label>
+                <label><input type="checkbox" name="brand" value="yuxiyony"> YUXIYONY</label>
+                <label><input type="checkbox" name="brand" value="zte"> ZTE</label>
+            </div>
+        </div>
+
+        <div class="price-section">
+            <h3>PRICE (KSH)</h3>
+            <div class="price-slider">
+                <input type="range" min="0" max="100" value="20" class="slider">
+                <input type="range" min="0" max="100" value="80" class="slider">
+            </div>
+            <div class="price-inputs">
+                <input type="number" min="0" placeholder="Min" class="min-price">
+                <span>-</span>
+                <input type="number" min="0" placeholder="Max" class="max-price">
+            </div>
+            <button class="apply-btn">Apply</button>
+        </div>
+
+        <div class="shipping-section">
+            <h3>SHIPPED FROM</h3>
+            <div class="shipping-options">
+                <label><input type="checkbox" name="shipping" value="abroad"> Shipped from abroad</label>
+                <label><input type="checkbox" name="shipping" value="kenya"> Shipped from Kenya</label>
+            </div>
+        </div>
+
+        <div class="stores-section">
+            <h3>OFFICIAL STORES</h3>
+            <div class="stores-options">
+                <label><input type="checkbox" name="official_store" value="1"> Only Official Store</label>
+            </div>
+        </div>
+
+        <div class="delivery-section">
+            <h3>EXPRESS DELIVERY</h3>
+            <!-- Additional delivery options -->
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="category-header">
+            <h1>{{ category.name }} <span>({{ page_obj.paginator.count }} products found)</span></h1>
+            <div class="sort-options">
+                <span>Sort by:</span>
+                <select>
+                    <option>Popularity</option>
+                    <option>Price: Low to High</option>
+                    <option>Price: High to Low</option>
+                    <option>Newest Arrivals</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="related-tags">
+            <span>Related results:</span>
+            {% for tag in related_tags %}
+            <a href="{% url 'search' %}?q={{ tag }}">{{ tag }}</a>
+            {% if not forloop.last %} | {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="filter-tags">
+            <div class="express-tag">
+                <img src="{% static 'images/express-icon.png' %}" alt="Express"> Express
+            </div>
+            <div class="location-tag">Shipped from Kenya</div>
+            <div class="brand-dropdown">
+                <button class="dropdown-btn">Brand <span>▼</span></button>
+            </div>
+            <div class="price-dropdown">
+                <button class="dropdown-btn">Price <span>▼</span></button>
+            </div>
+        </div>
+
+        <div class="product-grid">
+            {% for product in page_obj %}
+            <div class="product-card">
+                <div class="product-image">
+                    {% if product.warranty %}
+                    <div class="warranty-badge">{{ product.warranty }} WARRANTY</div>
+                    {% endif %}
+                    <a href="{% url 'product_detail' product.slug %}">
+                      <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    </a>  
+                    <button class="wishlist-btn">❤</button>
+                    {% if product.official_store %}
+                    <div class="store-badge">Official Store</div>
+                    {% endif %}
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">{{ product.name}} </h3>
+                    <div class="product-price">
+                        <span class="current-price">KSh {{ product.price|floatformat:0 }}</span>
+                        {% if product.original_price %}
+                        <div class="price-details">
+                            <span class="original-price">KSh {{ product.original_price|floatformat:0 }}</span>
+                            <span class="discount-percent">-{{ product.discount_percent }}%</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="product-rating">
+                        <div class="stars">
+                            {% for i in '12345'|make_list %}
+                            {% if forloop.counter <= product.rating %}
+                            <span class="star filled">★</span>
+                            {% else %}
+                            <span class="star">★</span>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        <span class="review-count">({{ product.total_reviews }})</span>
+                    </div>
+                    <div class="product-seller">
+                        {% if product.express_delivery %}
+                        <img src="{% static 'images/express-badge.png' %}" alt="Express Delivery" class="express-badge">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-products">
+                <p>No products found in this category.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="page-link">&laquo; Previous</a>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <span class="page-link active">{{ num }}</span>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="page-link">Next &raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+
+{% comment %}
+
 <h2>All Products</h2>
 <ul>
     {% for product in page_obj %}
@@ -20,3 +212,6 @@
         <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
     {% endif %}
 </div>
+
+
+ {% endcomment %}

@@ -254,6 +254,7 @@ class Product(models.Model):
     discount_percentage = models.PositiveIntegerField(null=True, blank=True)
     rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
     total_reviews = models.PositiveIntegerField(default=0)
+    sales_count = models.PositiveIntegerField(default=0)  # Add this field
     currency = models.CharField(max_length=10, default="KES")
     original_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     is_in_stock = models.BooleanField(default=True)
