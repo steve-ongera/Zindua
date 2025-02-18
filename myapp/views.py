@@ -75,19 +75,40 @@ def product_detail_view(request, slug):
     product = get_object_or_404(Product, slug=slug)
     seller = product.seller  # Assuming Product has a ForeignKey to Seller
 
+    #recently views using sessions 
+    # Initialize the recently viewed products list in session if not present
+    recently_viewed = request.session.get('recently_viewed', [])
+
+    # Add the current product's slug if it's not already in the list
+    if product.slug not in recently_viewed:
+        recently_viewed.append(product.slug)
+
+    # Limit the list to, for example, 5 products
+    if len(recently_viewed) > 5:
+        recently_viewed.pop(0)
+
+    # Save the updated recently viewed list in the session
+    request.session['recently_viewed'] = recently_viewed
+
+    # Fetch a default set of products if the list is empty
+    if not recently_viewed:
+        default_products = Product.objects.all()[:5]  # Or any criteria for default products
+    else:
+        default_products = Product.objects.filter(slug__in=recently_viewed)
+
     # Get the features of the product
     features = Feature.objects.filter(product=product)
 
     # Get other related objects (optional, as needed)
     related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:5]  # Adjust the filter based on your needs
     sponsored_products = Product.objects.filter(is_sponsored=True)[:5]  # Example, modify as needed
-    recently_viewed = Product.objects.filter(id__in=request.session.get('recently_viewed', []))[:5]  # Modify based on your recent view logic
+    
     context = {
         'product': product,
         'features': features,
         'related_products': related_products,
         'sponsored_products': sponsored_products,
-        'recently_viewed': recently_viewed,
+        'recently_viewed': default_products,
         'seller': seller
     }
 

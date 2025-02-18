@@ -237,12 +237,12 @@
       <div class="product-card">
         <div class="product-card-image">
           <a href="{% url 'product_detail' sponsored.slug %}">
-            <img src="{{ sponsored.main_image.url }}" alt="{{ sponsored.name }}">
+            <img src="{{ sponsored.image.url }}" alt="{{ sponsored.name }}">
           </a>
         </div>
         <div class="product-card-info">
           <a href="{% url 'product_detail' sponsored.slug %}" class="product-card-name">{{ sponsored.name }}</a>
-          <div class="product-card-price">{{ sponsored.currency }} {{ sponsored.current_price|floatformat:0 }}</div>
+          <div class="product-card-price">{{ sponsored.currency }} {{ sponsored.price|floatformat:0 }}</div>
           {% if sponsored.original_price %}
           <div class="product-card-original-price">{{ sponsored.currency }} {{ sponsored.original_price|floatformat:0 }}</div>
           {% endif %}
@@ -279,24 +279,45 @@
   <div class="products-carousel">
     <h2 class="carousel-title">Recently Viewed</h2>
     <div class="product-cards">
-      {% for recent in recently_viewed %}
-      <div class="product-card">
-        <div class="product-card-image">
-          <a href="{% url 'product_detail' recent.slug %}">
-            <img src="{{ recent.main_image.url }}" alt="{{ recent.name }}">
-          </a>
-        </div>
-        <div class="product-card-info">
-          <a href="{% url 'product_detail' recent.slug %}" class="product-card-name">{{ recent.name }}</a>
-          <div class="product-card-price">{{ recent.currency }} {{ recent.current_price|floatformat:0 }}</div>
-          {% if recent.original_price %}
-          <div class="product-card-original-price">{{ recent.currency }} {{ recent.original_price|floatformat:0 }}</div>
-          {% endif %}
-        </div>
-      </div>
-      {% endfor %}
+      {% if recently_viewed %}
+        {% for recent in recently_viewed %}
+          <div class="product-card">
+            <div class="product-card-image">
+              <a href="{% url 'product_detail' recent.slug %}">
+                <img src="{{ recent.image.url }}" alt="{{ recent.name }}">
+              </a>
+            </div>
+            <div class="product-card-info">
+              <a href="{% url 'product_detail' recent.slug %}" class="product-card-name">{{ recent.name }}</a>
+              <div class="product-card-price">{{ recent.currency }} {{ recent.price|floatformat:0 }}</div>
+              {% if recent.original_price %}
+              <div class="product-card-original-price">{{ recent.currency }} {{ recent.original_price|floatformat:0 }}</div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No recently viewed products. Here's something you might like:</p>
+        {% for product in default_products %}
+          <div class="product-card">
+            <div class="product-card-image">
+              <a href="{% url 'product_detail' product.slug %}">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+              </a>
+            </div>
+            <div class="product-card-info">
+              <a href="{% url 'product_detail' product.slug %}" class="product-card-name">{{ product.name }}</a>
+              <div class="product-card-price">{{ product.currency }} {{ product.price|floatformat:0 }}</div>
+              {% if product.original_price %}
+              <div class="product-card-original-price">{{ product.currency }} {{ product.original_price|floatformat:0 }}</div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
     </div>
   </div>
+  
 </div>
 
 <script>
