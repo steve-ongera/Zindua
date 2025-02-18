@@ -112,3 +112,17 @@ class OrderItemAdmin(admin.ModelAdmin):
     search_fields = ('order__id', 'product__name')
 
 admin.site.register(Payment, PaymentAdmin)
+
+@admin.register(Brand)
+class BrandAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('name',)}
+
+
+
+@admin.register(Seller)
+class SellerAdmin(admin.ModelAdmin):
+    list_display = ('store_name', 'user', 'contact_email', 'phone_number')  # Fields to display in the admin list view
+    search_fields = ('store_name', 'user__username', 'contact_email')  # Searchable fields
+    prepopulated_fields = {'slug': ('store_name',)}  # Auto-generate slug from store name
+    list_filter = ('store_name',)  # Add filters for quick filtering
+

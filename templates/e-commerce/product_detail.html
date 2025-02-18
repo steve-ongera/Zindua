@@ -1,4 +1,352 @@
+{% extends 'base.html' %}
+
+{% block title %}product detail{% endblock %}
+
+{% block content %}
+<!-- product-detail.html -->
+<div class="product-detail-container">
+  <!-- Breadcrumb navigation -->
+  <div class="breadcrumb">
+    <ul>
+      <li><a href="{% url 'home' %}">Home</a></li>
+      <li><a href="{% url 'category' product.category.slug %}">{{ product.category.name }}</a></li>
+      {% if product.subcategory %}
+      <li><a href="{% url 'subcategory' product.subcategory.slug %}">{{ product.subcategory.name }}</a></li>
+      {% endif %}
+      <li><span>{{ product.name }}</span></li>
+    </ul>
+  </div>
+
+  <!-- Main product detail section -->
+  <div class="product-main">
+    <!-- Product image and gallery -->
+    <div class="product-gallery">
+      <div class="main-image">
+        <img src="{{ product.main_image.url }}" alt="{{ product.name }}" id="main-product-image">
+        {% if product.is_official %}
+        <div class="official-badge">OFFICIAL STORE</div>
+        {% endif %}
+        {% if product.discount_percentage %}
+        <div class="discount-badge">-{{ product.discount_percentage }}%</div>
+        {% endif %}
+        <button class="wishlist-btn" aria-label="Add to wishlist">
+          <i class="far fa-heart"></i>
+        </button>
+      </div>
+      <div class="thumbnails">
+        {% for image in product.product_images.all %}
+        <div class="thumbnail {% if forloop.first %}active{% endif %}" data-image-url="{{ image.url }}">
+          <img src="{{ image.url }}" alt="{{ product.name }} - Image {{ forloop.counter }}">
+        </div>
+        {% endfor %}
+      </div>
+      <div class="share-product">
+        <span>SHARE THIS PRODUCT</span>
+        <div class="share-buttons">
+          <a href="#" aria-label="Share on Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="Share on Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" aria-label="Share on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product info and purchase section -->
+    <div class="product-info">
+      <h1 class="product-name">{{ product.name }}</h1>
+      <div class="product-brand">
+        Brand: <a href="{% url 'brand' product.brand.slug %}">{{ product.brand.name }}</a> | 
+        Similar products from {{ product.brand.name }}
+      </div>
+      
+      <div class="product-rating">
+        <div class="stars">
+          {% for i in '12345'|make_list %}
+          <i class="fa{% if forloop.counter <= product.rating %} fa-star{% else %} fa-star-o{% endif %}"></i>
+          {% endfor %}
+        </div>
+        <div class="rating-count">({{ product.total_reviews }} ratings)</div>
+      </div>
+      
+      <div class="product-price">
+        <div class="current-price">{{ product.currency }} {{ product.current_price|floatformat:0 }}</div>
+        {% if product.original_price %}
+        <div class="original-price">{{ product.currency }} {{ product.original_price|floatformat:0 }}</div>
+        <div class="discount">-{{ product.discount_percentage }}%</div>
+        {% endif %}
+      </div>
+      
+      {% if product.is_in_stock %}
+      <div class="in-stock">In stock</div>
+      {% else %}
+      <div class="out-of-stock">Out of stock</div>
+      {% endif %}
+      
+      <div class="shipping-info">
+        <div class="delivery-info">+ shipping from {{ product.currency }} {{ product.shipping_fee|floatformat:0 }}</div>
+        {% if product.delivery_time %}
+        <div class="delivery-time">{{ product.delivery_time }}</div>
+        {% endif %}
+      </div>
+      
+      <div class="add-to-cart-section">
+        <form action="{% url 'add_to_cart' product.id %}" method="POST">
+          {% csrf_token %}
+          <div class="quantity-selector">
+            <button type="button" class="decrease-qty" aria-label="Decrease quantity">-</button>
+            <input type="number" name="quantity" min="1" value="1" class="quantity-input">
+            <button type="button" class="increase-qty" aria-label="Increase quantity">+</button>
+          </div>
+          <button type="submit" class="add-to-cart-btn">ADD TO CART</button>
+        </form>
+      </div>
+      
+      <div class="promotions">
+        <h3>PROMOTIONS</h3>
+        <div class="promotion-item">
+          <div class="promo-icon"><i class="fa fa-tag"></i></div>
+          <div class="promo-text">
+            <span class="promo-title">1 for {{ product.currency }} {{ product.current_price|floatformat:0 }}</span>
+            <a href="#" class="promo-link">See Details</a>
+          </div>
+        </div>
+        {% if product.pay_on_delivery %}
+        <div class="promotion-item">
+          <div class="promo-icon"><i class="fa fa-money-bill"></i></div>
+          <div class="promo-text">
+            <span class="promo-title">Pay on Delivery</span>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    
+    <!-- Delivery and seller information -->
+    <div class="delivery-seller-info">
+      <div class="delivery-return-section">
+        <h3>DELIVERY & RETURNS</h3>
+        <div class="choose-location">
+          <h4>Choose your location</h4>
+          <select name="location" id="location-selector">
+            {% for location in available_locations %}
+            <option value="{{ location.id }}">{{ location.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <div class="delivery-options">
+          <div class="delivery-option">
+            <i class="fa fa-truck"></i>
+            <div class="option-details">
+              <h4>Door Delivery</h4>
+              <p>Ready to pickup in {{ product.pickup_days }} days if you order today</p>
+            </div>
+          </div>
+          
+          <div class="delivery-option">
+            <i class="fa fa-store"></i>
+            <div class="option-details">
+              <h4>Pickup Station</h4>
+              <p>Ready for pickup in {{ product.pickup_days }} days if you order today.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="return-policy">
+          <h4>Return Policy</h4>
+          <p>{{ product.return_policy_short }}</p>
+        </div>
+      </div>
+      
+      <div class="seller-section">
+        <h3>SELLER INFORMATION</h3>
+        <div class="seller-name">{{ product.seller.name }}</div>
+        <div class="seller-performance">
+          <div class="performance-label">Seller Score:</div>
+          <div class="performance-value">{{ product.seller.score }}%</div>
+        </div>
+        <div class="seller-button">
+          <a href="{% url 'seller_profile' seller.slug %}" class="seller-profile-btn">Visit Store</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Product details accordion -->
+  <div class="product-details-accordion">
+    <div class="accordion-section active">
+      <div class="accordion-header">
+        <h3>Product details</h3>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="accordion-content">
+        <div class="product-description">
+          {{ product.description|safe }}
+        </div>
+        
+        <div class="key-features">
+          <h4>KEY FEATURES</h4>
+          <ul>
+            {% for feature in product.features %}
+            <li>{{ feature }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        
+        <div class="specifications">
+          <h4>SPECIFICATIONS</h4>
+          <div class="specs-table">
+            {% for spec in product.specifications %}
+            <div class="spec-row">
+              <div class="spec-label">{{ spec.label }}</div>
+              <div class="spec-value">{{ spec.value }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="accordion-section">
+      <div class="accordion-header">
+        <h3>Specifications</h3>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="accordion-content">
+        <!-- Specification content -->
+      </div>
+    </div>
+    
+    <div class="accordion-section">
+      <div class="accordion-header">
+        <h3>Customer Feedback</h3>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="accordion-content">
+        <!-- Customer feedback content -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- Products carousel: Sponsored products -->
+  <div class="products-carousel">
+    <h2 class="carousel-title">Sponsored products</h2>
+    <div class="product-cards">
+      {% for sponsored in sponsored_products %}
+      <div class="product-card">
+        <div class="product-card-image">
+          <a href="{% url 'product_detail' sponsored.slug %}">
+            <img src="{{ sponsored.main_image.url }}" alt="{{ sponsored.name }}">
+          </a>
+        </div>
+        <div class="product-card-info">
+          <a href="{% url 'product_detail' sponsored.slug %}" class="product-card-name">{{ sponsored.name }}</a>
+          <div class="product-card-price">{{ sponsored.currency }} {{ sponsored.current_price|floatformat:0 }}</div>
+          {% if sponsored.original_price %}
+          <div class="product-card-original-price">{{ sponsored.currency }} {{ sponsored.original_price|floatformat:0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  
+  <!-- Products carousel: Customers who viewed this also viewed -->
+  <div class="products-carousel">
+    <h2 class="carousel-title">Customers who viewed this also viewed</h2>
+    <div class="product-cards">
+      {% for related in related_products %}
+      <div class="product-card">
+        <div class="product-card-image">
+          <a href="{% url 'product_detail' related.slug %}">
+            <img src="{{ related.main_image.url }}" alt="{{ related.name }}">
+          </a>
+        </div>
+        <div class="product-card-info">
+          <a href="{% url 'product_detail' related.slug %}" class="product-card-name">{{ related.name }}</a>
+          <div class="product-card-price">{{ related.currency }} {{ related.current_price|floatformat:0 }}</div>
+          {% if related.original_price %}
+          <div class="product-card-original-price">{{ related.currency }} {{ related.original_price|floatformat:0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  
+  <!-- Products carousel: Recently viewed -->
+  <div class="products-carousel">
+    <h2 class="carousel-title">Recently Viewed</h2>
+    <div class="product-cards">
+      {% for recent in recently_viewed %}
+      <div class="product-card">
+        <div class="product-card-image">
+          <a href="{% url 'product_detail' recent.slug %}">
+            <img src="{{ recent.main_image.url }}" alt="{{ recent.name }}">
+          </a>
+        </div>
+        <div class="product-card-info">
+          <a href="{% url 'product_detail' recent.slug %}" class="product-card-name">{{ recent.name }}</a>
+          <div class="product-card-price">{{ recent.currency }} {{ recent.current_price|floatformat:0 }}</div>
+          {% if recent.original_price %}
+          <div class="product-card-original-price">{{ recent.currency }} {{ recent.original_price|floatformat:0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Gallery thumbnail click handler
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    const mainImage = document.getElementById('main-product-image');
+    
+    thumbnails.forEach(thumbnail => {
+      thumbnail.addEventListener('click', function() {
+        // Update main image
+        mainImage.src = this.getAttribute('data-image-url');
+        
+        // Update active state
+        thumbnails.forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+    
+    // Quantity selector
+    const decreaseBtn = document.querySelector('.decrease-qty');
+    const increaseBtn = document.querySelector('.increase-qty');
+    const quantityInput = document.querySelector('.quantity-input');
+    
+    decreaseBtn.addEventListener('click', function() {
+      let value = parseInt(quantityInput.value);
+      if (value > 1) {
+        quantityInput.value = value - 1;
+      }
+    });
+    
+    increaseBtn.addEventListener('click', function() {
+      let value = parseInt(quantityInput.value);
+      quantityInput.value = value + 1;
+    });
+    
+    // Accordion functionality
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
+    
+    accordionHeaders.forEach(header => {
+      header.addEventListener('click', function() {
+        const section = this.parentElement;
+        section.classList.toggle('active');
+      });
+    });
+  });
+</script>
+
+{% endblock %}
+{% comment %}
 <h2>{{ product.name }}</h2>
 <p>{{ product.description }}</p>
 <p>Price: ${{ product.price }}</p>
 <img src="{{ product.image.url }}" alt="{{ product.name }}">
+{% endcomment %}

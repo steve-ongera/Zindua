@@ -153,8 +153,51 @@ class Payment(models.Model):
 
 # E-commerce Models
 
+
+from django.db import models
+from django.utils.text import slugify
+from django.contrib.auth import get_user_model
+
+# Ensure you're referencing the custom User model
+User = get_user_model()
+
+class Seller(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    store_name = models.CharField(max_length=255)
+    profile_picture = models.ImageField(upload_to='sellers/', blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
+    contact_email = models.EmailField()
+    phone_number = models.CharField(max_length=15)
+
+    slug = models.SlugField(unique=True, blank=True, null=True)
+
+    def __str__(self):
+        return self.store_name
+
+    # Automatically generate slug from store_name
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.store_name)
+        super().save(*args, **kwargs)
+
+
+
+class Brand(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    slug = models.SlugField(unique=True, blank=True)  # Ensure uniqueness
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)  # Automatically generate slug
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
 class Category(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)  # Make name unique if desired
+    slug = models.SlugField(unique=True)  # Make slug unique and required
     description = models.TextField(blank=True)
     image = models.ImageField(upload_to='category_images/', null=True, blank=True)
 
@@ -164,10 +207,26 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
+
+            while Category.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+
+            self.slug = slug
+
+        super().save(*args, **kwargs)
+
 class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     name = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, blank=True)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="products" , null=True, blank=True)
+    seller = models.ForeignKey(Seller, related_name='products', on_delete=models.CASCADE, null=True, blank=True)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField()
@@ -224,3 +283,5 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name} in Order {self.order.id}"
+
+

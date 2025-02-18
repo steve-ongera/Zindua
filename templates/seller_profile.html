@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="seller-profile">
+    <h1>{{ seller.name }}'s Profile</h1>
+    
+    <!-- Display the seller's details -->
+    <div class="seller-info">
+      <p><strong>Name:</strong> {{ seller.name }}</p>
+      <p><strong>Slug:</strong> {{ seller.slug }}</p>
+      <!-- Add more fields as necessary, for example, an image or bio -->
+    </div>
+
+    <!-- Optionally list the products sold by the seller -->
+    <h2>Products sold by {{ seller.name }}:</h2>
+    <ul>
+      {% for product in seller.products.all %}
+        <li>
+          <a href="{% url 'product_detail' slug=product.slug %}">{{ product.name }}</a>
+        </li>
+      {% empty %}
+        <li>No products listed.</li>
+      {% endfor %}
+    </ul>
+
+    <!-- Optionally, you could add more seller-related content here -->
+  </div>
+{% endblock %}

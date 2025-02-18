@@ -73,13 +73,31 @@ def product_list_view(request):
 @login_required
 def product_detail_view(request, slug):
     product = get_object_or_404(Product, slug=slug)
-    return render(request, 'e-commerce/product_detail.html', {'product': product})
+    seller = product.seller  # Assuming Product has a ForeignKey to Seller
+    return render(request, 'e-commerce/product_detail.html', {'product': product, 'seller': seller})
+
+
+def category_view(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    products = Product.objects.filter(category=category)
+    return render(request, 'category.html', {'category': category, 'products': products})
+
+def brand_view(request, slug):
+    brand = get_object_or_404(Brand, slug=slug)
+    products = Product.objects.filter(brand=brand)
+    return render(request, 'brand.html', {'brand': brand, 'products': products})
+
 
 def account_view(request):
     # Example: You can pass user information like username and email to the template
     user = request.user
     return render(request, 'account.html', {'user': user})
 
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    cart.products.add(product)
+    return redirect('cart')  # Ensure this exists in `urls.py`
 
 def cart_view(request):
     # Assuming you have a Cart model or you're using the session to store cart items
@@ -90,6 +108,9 @@ def cart_view(request):
     
     return render(request, 'cart.html', {'cart_items': total_items})
 
+def seller_profile(request, slug):
+    seller = get_object_or_404(Seller, slug=slug)
+    return render(request, 'seller_profile.html', {'seller': seller})
 
 def search_view(request):
     query = request.GET.get('q', '')
