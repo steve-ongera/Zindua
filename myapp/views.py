@@ -12,6 +12,7 @@ from django.shortcuts import redirect
 from django.contrib.auth import logout
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
+import random
 
 
 def register(request):
@@ -55,6 +56,10 @@ def home_view(request):
     top_sold_products = Product.objects.order_by('-stock')[:10]  # Example: Replace 'stock' with actual sales tracking field
     top_selling_products = Product.objects.order_by('-sales_count')[:6]  
 
+    # Fetch a random set of products (e.g., 6 products for Daily Finds)
+    all_products = list(Product.objects.all())  # Convert QuerySet to list
+    daily_finds = random.sample(all_products, min(len(all_products), 6))  # Get up to 6 random products
+
 
     context = {
         'categories': categories,
@@ -63,6 +68,7 @@ def home_view(request):
         'product_categories': product_categories,
         'top_sold_products': top_sold_products,
         'top_selling_products': top_selling_products,
+        'daily_finds': daily_finds,
     }
     return render(request, 'home.html', context)
 

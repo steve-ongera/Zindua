@@ -456,34 +456,35 @@
             <div class="section-header">
                 <h2>Daily Finds | Live Now</h2>
                 <div class="see-all">
-                    <a href="#">See All <i class="fas fa-chevron-right"></i></a>
+                    <a href="{% url 'product_list' %}">See All <i class="fas fa-chevron-right"></i></a>
                 </div>
             </div>
             <div class="products-grid">
-                <div class="product-card">
-                    <img src="{% static 'images/product13.jpg' %}" alt="XIAOMI Redmi A3s">
-                    <div class="product-info">
-                        <h3>XIAOMI Redmi A3s, 6.71", 64GB + 3GB RAM...</h3>
-                        <div class="price">
-                            <span class="current-price">KSh 9,390</span>
-                            <span class="original-price">KSh 10,999</span>
+                {% for product in daily_finds %}
+               
+                    <div class="product-card">
+                        {% if product.discount_percentage %}
+                        <div class="discount-tag">-{{ product.discount_percentage }}%</div>
+                        {% endif %}
+                        <a href="{% url 'product_detail' product.slug %}" >
+                              <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        </a>
+                        <div class="product-info">
+                            <h3>{{ product.name|truncatechars:50 }}</h3>
+                            <div class="price">
+                                <span class="current-price">KSh {{ product.price }}</span>
+                                {% if product.original_price %}
+                                <span class="original-price">KSh {{ product.original_price }}</span>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="product-card">
-                    <div class="discount-tag">-32%</div>
-                    <img src="{% static 'images/product14.jpg' %}" alt="Smartwatch Business">
-                    <div class="product-info">
-                        <h3>Smartwatch Business Bluetooth Call Smart Watch</h3>
-                        <div class="price">
-                            <span class="current-price">KSh 3,747</span>
-                            <span class="original-price">KSh 5,499</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- More product cards can be added here -->
+                
+                {% endfor %}
             </div>
         </section>
+
+
 
         <!-- Top Selling Items Section -->
         <section class="top-selling">
