@@ -145,3 +145,5 @@ class FeatureAdmin(admin.ModelAdmin):
 # Register Feature model with the admin site
 admin.site.register(Feature, FeatureAdmin)
 admin.site.register(PickupStation)
+admin.site.register(Transaction)
+

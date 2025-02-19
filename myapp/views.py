@@ -333,20 +333,35 @@ def checkout_view(request):
     
     orderitems = order.items.select_related('vendor').all()  # Ensure vendor is prefetched
 
-    for vendor in ['Jumia', 'Prime Classic Investment', 'Blessed GSF']:
-        vendor_ids = Seller.objects.filter(store_name=vendor).values_list('id', flat=True)  # Use store_name instead of name
-        vendor_items = orderitems.filter(vendor__isnull=False, vendor__id__in=vendor_ids)[:1]
+    # Fetch all unique vendors linked to orders
+    vendors = Seller.objects.all()  # Get all vendors dynamically
+
+    shipments = []
+
+    for vendor in vendors:
+        vendor_ids = Seller.objects.filter(store_name=vendor.store_name).values_list('id', flat=True)
         
+        print(f"Checking vendor: {vendor.store_name}")
+        print(f"Vendor IDs: {list(vendor_ids)}")
+
+        vendor_items = orderitems.filter(vendor__id__in=vendor_ids)
+
+        print(f"Vendor Items for {vendor.store_name}: {vendor_items.count()}")
+
         if vendor_items.exists():
             item = vendor_items.first()
+            print(f"Item found: {item.product.name}, Image URL: {item.product.image.url if item.product.image else 'No Image'}")
+
             shipments.append({
-                'fulfilled_by': vendor,
-                'scheduled': vendor == 'Jumia',
-                'delivery_date': '20 February' if vendor == 'Jumia' else '21 February and 22 February',
+                'fulfilled_by': vendor.store_name,
+                'scheduled': False,  # Modify if scheduling logic applies
+                'delivery_date': '21 February and 22 February',  # Modify if needed
                 'product': item.product,
                 'quantity': item.quantity,
-                'vendor_logo': item.vendor.logo if item.vendor else None
+                'profile_picture': item.vendor.profile_picture if item.vendor else None
             })
+
+
 
 
     
@@ -388,6 +403,48 @@ def checkout_view(request):
     
     return render(request, 'checkout.html', context)
 
+
+@login_required
+def pay_view(request):
+    user = request.user
+    order = Order.objects.filter(user=user, status='pending').first()
+
+    if not order:
+        messages.error(request, "No pending order found.")
+        return redirect('checkout_view')
+
+    if request.method == "POST":
+        name = request.POST.get("name")
+        id_number = request.POST.get("id_number")
+        phone_number = request.POST.get("phone_number")
+
+        if not name or not id_number or not phone_number:
+            messages.error(request, "All fields are required.")
+            return redirect('pay')
+
+        transaction = Transaction.objects.create(
+            user=user,
+            order=order,
+            name=name,
+            id_number=id_number,
+            phone_number=phone_number,
+            amount=order.get_order_total,  # Ensure this returns the correct total
+            status="completed"  # Change this based on actual payment processing
+        )
+
+        order.status = 'completed'
+        order.save()
+
+        messages.success(request, "Payment successful! Your order has been placed.")
+        return redirect('order_success')
+
+    context = {
+        "order_total": order.get_order_total  # Ensure this returns the correct total
+    }
+    return render(request, "pay.html", context)
+
+def order_success(request):
+    return render(request, 'order_success.html')
 
 def seller_profile(request, slug):
     seller = get_object_or_404(Seller, slug=slug)

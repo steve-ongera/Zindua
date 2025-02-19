@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% block title %} Checkout  - Jumia{% endblock %}
 {% block content %}
 <div class="checkout-container">
     <div class="checkout-steps">
@@ -58,8 +58,8 @@
                                 <div class="product-details">
                                     <p class="product-name">{{ shipment.product.name }}</p>
                                     <p class="product-qty">QTY: {{ shipment.quantity }}</p>
-                                    {% if shipment.vendor_logo %}
-                                    <img src="{{ shipment.vendor_logo.url }}" alt="{{ shipment.fulfilled_by }}" class="vendor-logo">
+                                    {% if shipment.profile_picture %}
+                                       <img src="{{ shipment.profile_picture.url }}" alt="{{ shipment.fulfilled_by }}" class="vendor-logo">
                                     {% endif %}
                                 </div>
                             </div>
@@ -103,7 +103,10 @@
             <p>You will be able to add a voucher when selecting your payment method.</p>
         </div>
         
-        <button class="confirm-order-btn">Confirm order</button>
+        <form action="{% url 'pay' %}" method="get">
+            <button type="submit" class="confirm-order-btn">Confirm Order</button>
+        </form>
+        
         <p class="completion-note">(Complete the steps in order to proceed)</p>
         
         <div class="terms-note">
