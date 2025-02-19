@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="checkout-container">
+    <div class="checkout-steps">
+        <div class="step completed">
+            <span class="step-icon">✓</span>
+            <span class="step-text">1. CUSTOMER ADDRESS</span>
+            <a href="{% url 'edit_address' %}" class="change-link">Change</a>
+        </div>
+        
+        <div class="customer-details">
+            <p class="customer-name">{{ order.customer_name }}</p>
+            <p class="customer-address">{{ order.address }}, {{ order.town }} | +{{ order.phone }}</p>
+        </div>
+        
+        <div class="step current">
+            <span class="step-number">2</span>
+            <span class="step-text">DELIVERY DETAILS</span>
+        </div>
+        
+        <div class="delivery-option">
+            <div class="pickup-option">
+                <div class="option-radio">
+                    <input type="radio" id="pickup" name="delivery_method" checked>
+                    <label for="pickup">Pick-up Station <span class="delivery-fee">(from KSh {{ delivery_fee }})</span></label>
+                </div>
+                <p class="delivery-date">Delivery between {{ delivery_start_date }} and {{ delivery_end_date }}</p>
+            </div>
+            
+            <div class="pickup-details">
+                <div class="detail-header">
+                    <span>Pickup Station</span>
+                    <a href="{% url 'change_pickup' %}" class="change-link">Change</a>
+                </div>
+                <p class="station-details">
+                    {{ pickup_station.name }}
+                    <br>{{ pickup_station.location_details }}
+                </p>
+            </div>
+            
+            <div class="shipment-container">
+                {% for shipment in shipments %}
+                <div class="shipment-section">
+                    <div class="shipment-header">
+                        <span>Shipment {{ forloop.counter }}/{{ shipments|length }}</span>
+                        <span class="fulfillment-info">Fulfilled by {{ shipment.fulfilled_by }}</span>
+                    </div>
+                    
+                    <div class="shipment-details">
+                        <div class="pickup-info">
+                            <h4>Pick-up Station</h4>
+                            <p>Delivery {% if shipment.scheduled %}scheduled on{% else %}between{% endif %} {{ shipment.delivery_date }}</p>
+                            
+                            <div class="product-item">
+                                <img src="{{ shipment.product.image.url }}" alt="{{ shipment.product.name }}">
+                                <div class="product-details">
+                                    <p class="product-name">{{ shipment.product.name }}</p>
+                                    <p class="product-qty">QTY: {{ shipment.quantity }}</p>
+                                    {% if shipment.vendor_logo %}
+                                    <img src="{{ shipment.vendor_logo.url }}" alt="{{ shipment.fulfilled_by }}" class="vendor-logo">
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="confirm-button-container">
+                <button class="confirm-delivery-btn">Confirm delivery details</button>
+            </div>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">3</span>
+            <span class="step-text">PAYMENT METHOD</span>
+        </div>
+    </div>
+    
+    <div class="order-summary">
+        <h3>Order summary</h3>
+        
+        <div class="summary-item">
+            <span>Item's total ({{ total_items }})</span>
+            <span class="price">KSh {{ items_total|floatformat:0 }}</span>
+        </div>
+        
+        <div class="summary-item">
+            <span>Delivery fees</span>
+            <span class="price">KSh {{ delivery_fee }}</span>
+        </div>
+        
+        <div class="summary-total">
+            <span>Total</span>
+            <span class="total-price">KSh {{ order_total|floatformat:0 }}</span>
+        </div>
+        
+        <div class="voucher-info">
+            <span class="info-icon">ℹ️</span>
+            <p>You will be able to add a voucher when selecting your payment method.</p>
+        </div>
+        
+        <button class="confirm-order-btn">Confirm order</button>
+        <p class="completion-note">(Complete the steps in order to proceed)</p>
+        
+        <div class="terms-note">
+            <p>By proceeding, you are automatically accepting the 
+                <a href="{% url 'terms' %}">Terms & Conditions</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="back-link">
+    <a href="{% url 'shopping_cart' %}">
+        <i class="back-icon">←</i> Go back & continue shopping
+    </a>
+</div>
+{% endblock %}

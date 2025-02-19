@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}product detail{% endblock %}
 
 {% block content %}
@@ -319,6 +319,8 @@
   </div>
   
 </div>
+
+<script src="{% static 'js/product-detail.js' %}"></script>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {

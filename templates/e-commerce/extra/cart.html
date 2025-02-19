@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="cart-container">
+    <div class="cart-header">
+        <h1>Cart ({{ cart_items|length }})</h1>
+    </div>
+    
+    <div class="cart-main">
+        <div class="cart-items">
+            {% for item in cart_items %}
+            <div class="cart-item">
+                <div class="item-image">
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                </div>
+                <div class="item-details">
+                    <h2>{{ item.product.name }}</h2>
+                    <div class="stock-status">
+                        {% if item.product.in_stock %}
+                        <span class="in-stock">In Stock</span>
+                        {% endif %}
+                        {% if item.product.is_express %}
+                        <span class="jumia-express">JUMIA EXPRESS</span>
+                        {% endif %}
+                    </div>
+                    {% if item.product.variation %}
+                    <div class="variation">
+                        Variation: {{ item.product.variation }}
+                    </div>
+                    {% endif %}
+                    {% if item.product.units_left %}
+                    <div class="units-left">
+                        Few units left
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="item-price">
+                    <div class="current-price">KSh {{ item.product.price }}</div>
+                    {% if item.product.original_price %}
+                    <div class="original-price">KSh {{ item.product.original_price }}</div>
+                    {% if item.product.discount %}
+                    <div class="discount">-{{ item.product.discount }}%</div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+                <div class="item-quantity">
+                    <button class="quantity-btn minus">−</button>
+                    <input type="number" value="{{ item.quantity }}" min="1" class="quantity-input">
+                    <button class="quantity-btn plus">+</button>
+                </div>
+                <div class="item-remove">
+                    <button class="remove-btn">Remove</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="cart-summary">
+            <h2>CART SUMMARY</h2>
+            <div class="subtotal">
+                <span>Subtotal</span>
+                <span>KSh {{ subtotal }}</span>
+            </div>
+            <button class="checkout-btn">
+                Checkout (KSh {{ subtotal }})
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

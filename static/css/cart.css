@@ -1,0 +1,157 @@
+.cart-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.cart-header h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.cart-main {
+    display: flex;
+    gap: 20px;
+}
+
+.cart-items {
+    flex: 1;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.cart-item {
+    display: flex;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    align-items: center;
+    gap: 20px;
+}
+
+.item-image img {
+    width: 100px;
+    height: auto;
+}
+
+.item-details {
+    flex: 1;
+}
+
+.item-details h2 {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.stock-status {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.in-stock {
+    color: #4CAF50;
+    font-size: 14px;
+}
+
+.jumia-express {
+    color: #f68b1e;
+    font-size: 14px;
+}
+
+.variation, .units-left {
+    color: #666;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.units-left {
+    color: #f68b1e;
+}
+
+.item-price {
+    text-align: right;
+    min-width: 120px;
+}
+
+.current-price {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.original-price {
+    color: #666;
+    text-decoration: line-through;
+    font-size: 14px;
+}
+
+.discount {
+    color: #f68b1e;
+    font-size: 14px;
+}
+
+.item-quantity {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.quantity-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.quantity-input {
+    width: 40px;
+    height: 32px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.remove-btn {
+    color: #f68b1e;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.cart-summary {
+    width: 300px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    height: fit-content;
+}
+
+.cart-summary h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.subtotal {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.checkout-btn {
+    width: 100%;
+    background: #f68b1e;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.checkout-btn:hover {
+    background: #e67e0d;
+}

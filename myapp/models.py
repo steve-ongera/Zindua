@@ -158,6 +158,15 @@ from django.db import models
 from django.utils.text import slugify
 from django.contrib.auth import get_user_model
 
+class PickupStation(models.Model):
+    name = models.CharField(max_length=100)
+    location = models.CharField(max_length=200)
+    details = models.TextField()
+    
+    def __str__(self):
+        return self.name
+
+
 # Ensure you're referencing the custom User model
 User = get_user_model()
 
@@ -329,19 +338,40 @@ class CartItem(models.Model):
         return f"{self.quantity} x {self.product.name}"
 
 class Order(models.Model):
+    PENDING = 'pending'
+    PROCESSING = 'processing'
+    SHIPPED = 'shipped'
+    DELIVERED = 'delivered'
+    CANCELLED = 'cancelled'
+    
     STATUS_CHOICES = [
-        ('PENDING', 'Pending'),
-        ('SHIPPED', 'Shipped'),
-        ('DELIVERED', 'Delivered'),
-        ('CANCELLED', 'Cancelled'),
+        (PENDING, 'Pending'),
+        (PROCESSING, 'Processing'),
+        (SHIPPED, 'Shipped'),
+        (DELIVERED, 'Delivered'),
+        (CANCELLED, 'Cancelled'),
     ]
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Order {self.id} - {self.user.email}"
+    date_ordered = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
+    delivery_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    pickup_station = models.ForeignKey(PickupStation, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    @property
+    def get_cart_total(self):
+        orderitems = self.orderitem_set.all()
+        total = sum([item.get_total for item in orderitems])
+        return total
+    
+    @property
+    def get_order_total(self):
+        return self.get_cart_total + self.delivery_fee
+    
+    @property
+    def get_total_items(self):
+        orderitems = self.orderitem_set.all()
+        return sum([item.quantity for item in orderitems])
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')

@@ -1,16 +1,185 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-  <h2>Your Shopping Cart</h2>
-  {% if cart_items %}
-    <ul>
-      {% for item in cart_items %}
-        <li>{{ item.name }} - {{ item.quantity }}</li>
-        <!-- Adjust according to your cart structure -->
-      {% endfor %}
-    </ul>
-    <p>Total Items: {{ cart_items|length }}</p>
-  {% else %}
-    <p>Your cart is empty.</p>
-  {% endif %}
+<div class="cart-container">
+    <div class="cart-header">
+        <h1>Cart ({{ cart_items|length }})</h1>
+    </div>
+    
+    <div class="cart-main">
+        <div class="cart-items">
+            {% for item in cart_items %}
+            <div class="cart-item" data-item-id="{{ item.id }}">
+                <div class="item-image">
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                </div>
+                <div class="item-details">
+                    <h2>{{ item.product.name }}</h2>
+                    <div class="stock-status">
+                        {% if item.product.in_stock %}
+                        <span class="in-stock">In Stock</span>
+                        {% endif %}
+                        {% if item.product.is_express %}
+                        <span class="jumia-express">JUMIA EXPRESS</span>
+                        {% endif %}
+                    </div>
+                    {% if item.product.variation %}
+                    <div class="variation">
+                        Variation: {{ item.product.variation }}
+                    </div>
+                    {% endif %}
+                    {% if item.product.units_left %}
+                    <div class="units-left">
+                        Few units left
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="item-price">
+                    <div class="current-price">KSh {{ item.product.price }}</div>
+                    {% if item.product.original_price %}
+                    <div class="original-price">KSh {{ item.product.original_price }}</div>
+                    {% if item.product.discount %}
+                    <div class="discount">-{{ item.product.discount }}%</div>
+                    {% endif %}
+                    {% endif %}
+                </div>
+                <div class="item-quantity" data-item-id="{{ item.id }}">
+                  <button type="button" class="quantity-btn decrease-qty" aria-label="Decrease quantity">−</button>
+                  <input type="number" name="quantity" min="1" value="{{ item.quantity }}" class="quantity-input" readonly>
+                  <button type="button" class="quantity-btn increase-qty" aria-label="Increase quantity">+</button>
+               </div>
+               <div class="item-remove">
+                  <form action="{% url 'remove_from_cart' item.id %}" method="POST" class="remove-item-form">
+                      {% csrf_token %}
+                      <button type="submit" class="remove-btn">Remove</button>
+                  </form>
+               </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="cart-summary">
+            <h2>CART SUMMARY</h2>
+            <div class="subtotal">
+                <span>Subtotal</span>
+                <span>KSh {{ subtotal }}</span>
+            </div>
+            <button class="checkout-btn">
+                Checkout (KSh {{ subtotal }})
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  
+      // Handle quantity changes
+      document.querySelectorAll('.item-quantity').forEach(container => {
+          const decreaseBtn = container.querySelector('.decrease-qty');
+          const increaseBtn = container.querySelector('.increase-qty');
+          const input = container.querySelector('.quantity-input');
+          const itemId = container.dataset.itemId;
+  
+          decreaseBtn.addEventListener('click', () => updateQuantity(itemId, 'decrease'));
+          increaseBtn.addEventListener('click', () => updateQuantity(itemId, 'increase'));
+      });
+  
+      // Handle remove buttons
+      document.querySelectorAll('.remove-item-form').forEach(form => {
+          form.addEventListener('submit', function(e) {
+              e.preventDefault();
+              const itemId = this.closest('.cart-item').dataset.itemId; // Ensure correct ID
+              removeItem(itemId);
+          });
+      });
+    
+
+      // update quantity
+  
+      function updateQuantity(itemId, action) {
+            fetch('{% url "update_cart_item" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken
+                },
+                body: `item_id=${itemId}&action=${action}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const itemContainer = document.querySelector(`.cart-item[data-item-id="${itemId}"]`);
+                    const quantityInput = itemContainer.querySelector('.quantity-input');
+                    const priceElement = itemContainer.querySelector('.current-price');
+        
+                    quantityInput.value = data.quantity;
+        
+                    // Update product total price
+                    priceElement.textContent = `KSh ${data.item_total}`;
+        
+                    // Update subtotal and checkout button
+                    document.querySelector('.subtotal span:last-child').textContent = `KSh ${data.cart_subtotal}`;
+                    document.querySelector('.checkout-btn').textContent = `Checkout (KSh ${data.cart_subtotal})`;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+  
+      function removeItem(itemId) {
+        if (!itemId) return;
+
+        fetch(`/cart/remove/${itemId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Remove item from DOM
+                const itemContainer = document.querySelector(`.cart-item[data-item-id="${itemId}"]`);
+                if (itemContainer) {
+                    itemContainer.remove();
+
+                    // Update subtotal displays
+                    const subtotalElements = document.querySelectorAll('.cart-subtotal');
+                    subtotalElements.forEach(el => {
+                        el.textContent = `KSh ${data.cart_subtotal}`;
+                    });
+
+                    const checkoutBtn = document.querySelector('.checkout-btn');
+                    if (checkoutBtn) {
+                        checkoutBtn.textContent = `Checkout (KSh ${data.cart_subtotal})`;
+                    }
+
+                    // Update cart count in header
+                    const cartCount = document.querySelector('.cart-count');
+                    if (cartCount) {
+                        cartCount.textContent = data.cart_count;
+                    }
+
+                    // Update cart header count
+                    const cartHeader = document.querySelector('.cart-header h1');
+                    if (cartHeader) {
+                        const currentCount = document.querySelectorAll('.cart-item').length;
+                        cartHeader.textContent = `Cart (${currentCount})`;
+                    }
+                }
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+  });
+  </script>
+
+
 {% endblock %}
+

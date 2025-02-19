@@ -13,6 +13,8 @@ from django.contrib.auth import logout
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
 import random
+from django.db.models import Sum, F
+from django.http import JsonResponse
 
 
 def register(request):
@@ -156,20 +158,139 @@ def account_view(request):
     user = request.user
     return render(request, 'account.html', {'user': user})
 
-def add_to_cart(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    cart, created = Cart.objects.get_or_create(user=request.user)
-    cart.products.add(product)
-    return redirect('cart')  # Ensure this exists in `urls.py`
+from django.shortcuts import redirect, get_object_or_404
+from django.contrib import messages
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from .models import Product, Cart, CartItem
 
+@login_required
+def add_to_cart(request, product_id):
+    if request.method == 'POST':
+        product = get_object_or_404(Product, id=product_id)
+        quantity = int(request.POST.get('quantity', 1))
+        
+        # Get or create cart
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+        
+        # Check if product already in cart
+        cart_item, created = CartItem.objects.get_or_create(
+            cart=cart,
+            product=product,
+            defaults={'quantity': quantity}
+        )
+        
+        if not created:
+            # Update quantity if item already exists
+            cart_item.quantity += quantity
+            cart_item.save()
+        
+        # Check if it's an AJAX request
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Added to cart successfully',
+                'cart_count': cart.items.count()
+            })
+        
+        # For normal form submission
+        messages.success(request, 'Product added to cart successfully!')
+        return redirect('cart')
+        
+    return redirect('product_detail', product_id=product_id)
+
+
+@login_required
 def cart_view(request):
-    # Assuming you have a Cart model or you're using the session to store cart items
-    cart_items = request.session.get('cart', [])
+    # Get or create cart for the user
+    cart, created = Cart.objects.get_or_create(user=request.user)
     
-    # Optionally, if you have a Cart model and want to calculate the total items:
-    total_items = len(cart_items)
+    # Get all cart items with their related products
+    cart_items = cart.items.select_related('product').all()
     
-    return render(request, 'cart.html', {'cart_items': total_items})
+    # Calculate subtotal
+    subtotal = sum(item.subtotal() for item in cart_items)
+    
+    context = {
+        'cart_items': cart_items,
+        'subtotal': subtotal,
+    }
+    
+    return render(request, 'cart.html', context)
+
+@login_required
+def update_cart_item(request):
+    if request.method == 'POST':
+        item_id = request.POST.get('item_id')
+        action = request.POST.get('action')
+        
+        try:
+            cart_item = CartItem.objects.get(id=item_id, cart__user=request.user)
+            
+            if action == 'increase':
+                cart_item.quantity += 1
+            elif action == 'decrease' and cart_item.quantity > 1:
+                cart_item.quantity -= 1
+            elif action == 'remove':
+                cart_item.delete()
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'Item removed',
+                    'cart_subtotal': sum(item.subtotal() for item in request.user.cart.items.all())
+                })
+            
+            cart_item.save()
+
+            # Calculate updated subtotal
+            cart_items = CartItem.objects.all()
+            cart_subtotal = sum(item.product.price * item.quantity for item in cart_items)
+            
+            # Return updated cart information
+            return JsonResponse({
+                'status': 'success',
+                'quantity': cart_item.quantity,
+                'item_total': cart_item.product.price * cart_item.quantity,
+                'cart_subtotal': cart_subtotal
+                # 'item_subtotal': cart_item.subtotal(),
+                # 'cart_subtotal': sum(item.subtotal() for item in request.user.cart.items.all())
+            })
+            
+        except CartItem.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Item not found'}, status=404)
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+
+
+@login_required
+def remove_from_cart(request, item_id):
+    if request.method == 'POST':
+        # Get the cart item, ensuring it belongs to the current user
+        cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+        
+        # Store the cart reference before deleting the item
+        cart = cart_item.cart
+        
+        # Delete the item
+        cart_item.delete()
+        
+        # Calculate new subtotal
+        new_subtotal = sum(item.subtotal() for item in cart.items.all())
+        
+        # Check if it's an AJAX request
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Item removed from cart',
+                'cart_subtotal': new_subtotal,
+                'cart_count': cart.items.count()
+            })
+            
+        # For regular form submission
+        messages.success(request, 'Item removed from cart successfully!')
+        return redirect('cart')
+        
+    # If not POST, redirect to cart
+    return redirect('cart')
 
 def seller_profile(request, slug):
     seller = get_object_or_404(Seller, slug=slug)
