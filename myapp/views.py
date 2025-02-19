@@ -88,7 +88,7 @@ def product_detail_view(request, slug):
         recently_viewed.append(product.slug)
 
     # Limit the list to, for example, 5 products
-    if len(recently_viewed) > 5:
+    if len(recently_viewed) > 6:
         recently_viewed.pop(0)
 
     # Save the updated recently viewed list in the session
@@ -96,7 +96,7 @@ def product_detail_view(request, slug):
 
     # Fetch a default set of products if the list is empty
     if not recently_viewed:
-        default_products = Product.objects.all()[:5]  # Or any criteria for default products
+        default_products = Product.objects.all()[:6]  # Or any criteria for default products
     else:
         default_products = Product.objects.filter(slug__in=recently_viewed)
 
@@ -104,8 +104,8 @@ def product_detail_view(request, slug):
     features = Feature.objects.filter(product=product)
 
     # Get other related objects (optional, as needed)
-    related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:5]  # Adjust the filter based on your needs
-    sponsored_products = Product.objects.filter(is_sponsored=True)[:5]  # Example, modify as needed
+    related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:6]  # Adjust the filter based on your needs
+    sponsored_products = Product.objects.filter(is_sponsored=True)[:6]  # Example, modify as needed
     
     context = {
         'product': product,
