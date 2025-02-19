@@ -100,11 +100,11 @@ class CartItemAdmin(admin.ModelAdmin):
     list_display = ('cart', 'product', 'quantity')
     search_fields = ('cart__user__email', 'product__name')
 
-@admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'status', 'total_price', 'created_at')
-    list_filter = ('status', 'created_at')
-    search_fields = ('user__email', 'id')
+# @admin.register(Order)
+# class OrderAdmin(admin.ModelAdmin):
+#     list_display = ('id', 'user', 'status', 'total_price', 'created_at')
+#     list_filter = ('status', 'created_at')
+#     search_fields = ('user__email', 'id')
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):

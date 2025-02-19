@@ -292,6 +292,103 @@ def remove_from_cart(request, item_id):
     # If not POST, redirect to cart
     return redirect('cart')
 
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import Cart, CartItem, Order, OrderItem, PickupStation
+
+@login_required
+def checkout_view(request):
+    user = request.user
+    
+    # Get user's cart
+    cart, created = Cart.objects.get_or_create(user=user)
+    cart_items = CartItem.objects.filter(cart=cart)
+    
+    # Ensure an order exists
+    order, created = Order.objects.get_or_create(user=user, status='pending')
+    
+    # Clear old order items and replace with current cart items
+    order.items.all().delete()
+    
+    # Move cart items to order items
+    for cart_item in cart_items:
+        OrderItem.objects.create(
+            order=order,
+            product=cart_item.product,
+            quantity=cart_item.quantity,
+            price=cart_item.product.price,  # Store price at the time of order
+            vendor=cart_item.product.seller
+        )
+    
+    # Clear cart after moving items to order
+    #cart_items.delete()
+    
+    # Group order items by vendor for shipment display
+    shipments = []
+    orderitems = order.items.all()
+    
+    # Example vendors and shipments
+    vendors = ['Jumia', 'Prime Classic Investment', 'Blessed GSF']
+    delivery_dates = ['20 February', '21 February and 22 February', '21 February and 22 February']
+    
+    orderitems = order.items.select_related('vendor').all()  # Ensure vendor is prefetched
+
+    for vendor in ['Jumia', 'Prime Classic Investment', 'Blessed GSF']:
+        vendor_ids = Seller.objects.filter(store_name=vendor).values_list('id', flat=True)  # Use store_name instead of name
+        vendor_items = orderitems.filter(vendor__isnull=False, vendor__id__in=vendor_ids)[:1]
+        
+        if vendor_items.exists():
+            item = vendor_items.first()
+            shipments.append({
+                'fulfilled_by': vendor,
+                'scheduled': vendor == 'Jumia',
+                'delivery_date': '20 February' if vendor == 'Jumia' else '21 February and 22 February',
+                'product': item.product,
+                'quantity': item.quantity,
+                'vendor_logo': item.vendor.logo if item.vendor else None
+            })
+
+
+    
+    # Assign pickup station
+    pickup_station, created = PickupStation.objects.get_or_create(
+        name="G4S Makuyu-Kenol Station",
+        defaults={
+            'location': 'Kenol, Golan House',
+            'details': 'Kenol, Golan House, Ground Floor, Muranga - Kenol'
+        }
+    )
+    order.pickup_station = pickup_station
+    order.delivery_fee = 461
+    order.save()
+    
+    # Phone display
+    phone_display = f"+{user.phone_number}" if user.phone_number else ""
+    
+    context = {
+        'order': {
+            'customer_name': f"{user.first_name} {user.last_name}" if user.first_name else user.email,
+            'address': user.location,
+            'town': 'Muranga Town',
+            'phone': phone_display
+        },
+        'delivery_fee': order.delivery_fee,
+        'delivery_start_date': '20 February',
+        'delivery_end_date': '22 February',
+        'pickup_station': {
+            'name': pickup_station.name,
+            'location_details': pickup_station.details
+        },
+        'shipments': shipments,
+        'items_total': order.get_cart_total,  # No parentheses
+        'order_total': order.get_order_total,  # No parentheses
+        'total_items': order.get_total_items  # No parentheses
+
+    }
+    
+    return render(request, 'checkout.html', context)
+
+
 def seller_profile(request, slug):
     seller = get_object_or_404(Seller, slug=slug)
     return render(request, 'seller_profile.html', {'seller': seller})

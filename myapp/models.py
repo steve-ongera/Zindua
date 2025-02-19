@@ -360,7 +360,7 @@ class Order(models.Model):
     
     @property
     def get_cart_total(self):
-        orderitems = self.orderitem_set.all()
+        orderitems = self.items.all()  # Changed from orderitem_set to items
         total = sum([item.get_total for item in orderitems])
         return total
     
@@ -370,7 +370,7 @@ class Order(models.Model):
     
     @property
     def get_total_items(self):
-        orderitems = self.orderitem_set.all()
+        orderitems = self.items.all()  # Changed from orderitem_set to items
         return sum([item.quantity for item in orderitems])
 
 class OrderItem(models.Model):
@@ -378,6 +378,14 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)], default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    vendor = models.ForeignKey(Seller, on_delete=models.SET_NULL, null=True, blank=True)
+    delivery_date_start = models.DateField(null=True, blank=True)
+    delivery_date_end = models.DateField(null=True, blank=True)
+
+    @property
+    def get_total(self):
+        return self.product.price * self.quantity
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name} in Order {self.order.id}"

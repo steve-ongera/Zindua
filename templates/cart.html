@@ -65,9 +65,9 @@
                 <span>Subtotal</span>
                 <span>KSh {{ subtotal }}</span>
             </div>
-            <button class="checkout-btn">
-                Checkout (KSh {{ subtotal }})
-            </button>
+            <a href="{% url 'checkout_view' %}" class="checkout-btn">
+               Checkout (KSh {{ subtotal }})
+            </a>
         </div>
     </div>
 </div>
