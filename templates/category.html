@@ -130,10 +130,10 @@
                     <h3 class="product-name">{{ product.name}} </h3>
                     <div class="product-price">
                         <span class="current-price">KSh {{ product.price|floatformat:0 }}</span>
-                        {% if product.original_price %}
+                        {% if product.price %}
                         <div class="price-details">
                             <span class="original-price">KSh {{ product.original_price|floatformat:0 }}</span>
-                            <span class="discount-percent">-{{ product.discount_percent }}%</span>
+                            <span class="discount-percent">-{{ product.discount_percentage }}%</span>
                         </div>
                         {% endif %}
                     </div>
