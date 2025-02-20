@@ -23,10 +23,14 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('home')  # Change 'home' to your actual home page
+            messages.success(request, "Registration successful! Welcome aboard.")
+            return redirect('home')  # homepage 
+        else:
+            messages.error(request, "Registration failed. Please try again.")
     else:
         form = CustomUserCreationForm()
     return render(request, "register.html", {"form": form})
+
 
 def custom_login(request):
     if request.method == "POST":
@@ -37,7 +41,12 @@ def custom_login(request):
             user = authenticate(request, username=email_or_username, password=password)
             if user:
                 login(request, user)
+                messages.success(request, f"Welcome back, {user.username}!")
                 return redirect('home')  # Redirect to dashboard
+            else:
+                messages.error(request, "Invalid username or password.")
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
         form = CustomAuthenticationForm()
     return render(request, "login.html", {"form": form})
@@ -45,6 +54,7 @@ def custom_login(request):
 
 def custom_logout(request):
     logout(request)
+    messages.success(request, "You have successfully logged out.")
     return redirect('login')  # Redirect to login page after logout
 
 
