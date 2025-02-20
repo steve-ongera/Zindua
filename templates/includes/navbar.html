@@ -110,21 +110,21 @@
         </a>
         <div class="dropdown-menu">
           <ul>
-            {% for category in categories %}
-            <li>
-              {% if category.slug %}
-                <a href="{% url 'category' slug=category.slug %}">
-                 
-                  {{ category.name }}
-                </a>
-              {% else %}
-                <!-- Optional fallback message -->
-                <span>{{ category.name }} (No valid slug)</span>
-              {% endif %}
-            </li>
-          {% empty %}
-            <li><a href="#">No categories available</a></li>
-          {% endfor %}
+              {% for category in categories %}
+                  <li>
+                    {% if category.slug %}
+                      <a href="{% url 'category' slug=category.slug %}">
+                      
+                        {{ category.name }}
+                      </a>
+                    {% else %}
+                      <!-- Optional fallback message -->
+                      <span>{{ category.name }} (No valid slug)</span>
+                    {% endif %}
+                  </li>
+              {% empty %}
+                   <li><a href="#">No categories available</a></li>
+             {% endfor %}
 
           </ul>
         </div>

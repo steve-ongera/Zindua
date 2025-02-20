@@ -50,7 +50,7 @@ def custom_logout(request):
 
 @login_required
 def home_view(request):
-    categories = ServiceCategory.objects.all()
+    services_categories = ServiceCategory.objects.all()
     top_providers = ServiceProvider.objects.order_by('-average_rating')[:8]
     sponsored_products = Product.objects.filter(is_sponsored=True)[:10]  # Example, modify as needed
 
@@ -64,7 +64,7 @@ def home_view(request):
 
 
     context = {
-        'categories': categories,
+        'services_categories': services_categories,
         'top_providers': top_providers,
         'sponsored_products': sponsored_products,
         'product_categories': product_categories,
