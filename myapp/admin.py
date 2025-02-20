@@ -100,11 +100,8 @@ class CartItemAdmin(admin.ModelAdmin):
     list_display = ('cart', 'product', 'quantity')
     search_fields = ('cart__user__email', 'product__name')
 
-# @admin.register(Order)
-# class OrderAdmin(admin.ModelAdmin):
-#     list_display = ('id', 'user', 'status', 'total_price', 'created_at')
-#     list_filter = ('status', 'created_at')
-#     search_fields = ('user__email', 'id')
+admin.site.register(Order)
+
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
@@ -145,5 +142,12 @@ class FeatureAdmin(admin.ModelAdmin):
 # Register Feature model with the admin site
 admin.site.register(Feature, FeatureAdmin)
 admin.site.register(PickupStation)
-admin.site.register(Transaction)
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'get_order_items', 'amount', 'status', 'timestamp')
+    
+    def get_order_items(self, obj):
+        return obj.get_order_items_display()
+    get_order_items.short_description = 'Order Items'
+
+admin.site.register(Transaction, TransactionAdmin)
 

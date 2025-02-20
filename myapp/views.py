@@ -662,3 +662,43 @@ def add_review(request, booking_id):
         'form': form,
         'booking': booking
     })
+
+
+#e-commerce admin view 
+@login_required
+def transaction_list(request):
+    """View to display all transactions"""
+    # For staff/admin users, show all transactions
+    if request.user.is_staff:
+        transactions = Transaction.objects.all().order_by('-timestamp')
+    # For regular users, show only their transactions
+    else:
+        transactions = Transaction.objects.filter(user=request.user).order_by('-timestamp')
+    
+    context = {
+        'transactions': transactions,
+    }
+    return render(request, 'transactions/transaction_list.html', context)
+
+@login_required
+def transaction_detail(request, transaction_id):
+    """View to display details of a specific transaction"""
+    # For staff/admin, allow viewing any transaction
+    if request.user.is_staff:
+        transaction = get_object_or_404(Transaction, id=transaction_id)
+    # For regular users, only allow viewing their own transactions
+    else:
+        transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user)
+    
+    # Get the order associated with this transaction
+    order = transaction.order
+    
+    # Get all items in this order
+    order_items = order.items.all()
+    
+    context = {
+        'transaction': transaction,
+        'order': order,
+        'order_items': order_items,
+    }
+    return render(request, 'transactions/transaction_detail.html', context)

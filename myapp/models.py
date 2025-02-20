@@ -5,6 +5,8 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
 import uuid
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+import random
+import string
 
 class CustomUserManager(BaseUserManager):
     """ Custom manager for user model where email is the unique identifier """
@@ -358,6 +360,22 @@ class Order(models.Model):
     delivery_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     pickup_station = models.ForeignKey(PickupStation, on_delete=models.SET_NULL, null=True, blank=True)
     
+    order_id = models.CharField(max_length=6, unique=True, default='')
+    
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            characters = string.ascii_uppercase + string.digits
+            while True:
+                new_id = ''.join(random.choice(characters) for _ in range(6))
+                if not Order.objects.filter(order_id=new_id).exists():
+                    self.order_id = new_id
+                    break
+        super().save(*args, **kwargs)
+    
+    def __str__(self):
+       return f"Order {self.order_id}"
+    
+    
     @property
     def get_cart_total(self):
         orderitems = self.items.all()  # Changed from orderitem_set to items
@@ -403,5 +421,14 @@ class Transaction(models.Model):
     status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('completed', 'Completed')], default='pending')
     timestamp = models.DateTimeField(auto_now_add=True)
 
+    def get_order_items_display(self):
+        items = self.order.items.all()
+        if not items:
+            return "No items"
+        
+        item_strings = [f"{item.quantity} x {item.product.name}" for item in items]
+        return ", ".join(item_strings)
+    
     def __str__(self):
-        return f"Transaction {self.id} - {self.user.username}"
+        items_summary = self.get_order_items_display()
+        return f"Transaction {self.id} - {self.user.username} ({items_summary})"

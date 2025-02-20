@@ -43,4 +43,10 @@ urlpatterns = [
     path('category/<slug:slug>/', views.category_view, name='category'),
     path('brand/<slug:slug>/', views.brand_view, name='brand'),
     path('seller/<slug:slug>/', views.seller_profile, name='seller_profile'),
+
+    ## Other URL patterns admin urls
+    
+    path('transactions/', views.transaction_list, name='transaction_list'),
+    path('transactions/<int:transaction_id>/', views.transaction_detail, name='transaction_detail'),
+
 ]
