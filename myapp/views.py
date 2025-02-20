@@ -452,13 +452,22 @@ def seller_profile(request, slug):
 
 def search_view(request):
     query = request.GET.get('q', '')
+    
     if query:
-        # Assuming you have a Product model, adjust to your actual model
-        results = Product.objects.filter(name__icontains=query)  # Adjust field name as needed
+        # Search products by name (adjust field name if needed)
+        results = Product.objects.filter(name__icontains=query)
     else:
         results = Product.objects.all()  # Return all if no query
     
-    return render(request, 'search_results.html', {'results': results, 'query': query})
+    # Apply pagination (e.g., 10 products per page)
+    paginator = Paginator(results, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'search_results.html', {
+        'page_obj': page_obj,
+        'query': query
+    })
 
 
 def service_provider_list(request):

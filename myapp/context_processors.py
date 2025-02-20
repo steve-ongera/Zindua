@@ -1,8 +1,11 @@
 # context_processors.py
 
+from django.db.models import Sum  # Import Sum from Django ORM
+from .models import Cart, CartItem  # Adjust the import according to your app structure
+
 def navbar_context(request):
-    """Context processor to include main categories in every template."""
-    # Example data, you would typically fetch this from your database
+    """Context processor to include main categories and cart item count."""
+
     main_categories = [
         {'name': 'Supermarket', 'slug': 'supermarket'},
         {'name': 'Health & Beauty', 'slug': 'health-beauty'},
@@ -13,13 +16,23 @@ def navbar_context(request):
         {'name': 'Fashion', 'slug': 'fashion'},
     ]
     
-    # Get cart items count from session or user model
-    cart_items = request.session.get('cart_items_count', 0)
+    cart_items_count = 0
+    
+    # Check if the user is authenticated
+    if request.user.is_authenticated:
+        # Get the user's cart
+        try:
+            cart = Cart.objects.get(user=request.user)
+            # Count total quantity of items in the cart
+            cart_items_count = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+        except Cart.DoesNotExist:
+            cart_items_count = 0
     
     return {
         'main_categories': main_categories,
-        'cart_items': cart_items
+        'cart_items': cart_items_count
     }
+
 
 
 from myapp.models import Category

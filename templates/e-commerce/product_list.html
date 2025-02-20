@@ -187,31 +187,3 @@
 </div>
 {% endblock %}
 
-
-{% comment %}
-
-<h2>All Products</h2>
-<ul>
-    {% for product in page_obj %}
-        <li>
-            <a href="{% url 'product_detail' product.slug %}">{{ product.name }}</a> - ${{ product.price }}
-        </li>
-    {% endfor %}
-</ul>
-
-<div>
-    {% if page_obj.has_previous %}
-        <a href="?page=1">First</a>
-        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-    {% endif %}
-
-    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">Next</a>
-        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-    {% endif %}
-</div>
-
-
- {% endcomment %}
