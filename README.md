@@ -1,6 +1,6 @@
 # Jumia E-commerce Clone
 
-![Jumia Logo](https://static.jumia.co.ke/cms/2023/W01/HP/Desktop/JumiaLogo.png)
+![Homepage](https://github.com/steve-ongera/Zindua/blob/main/screenshots/screenshot_homepgae.png)
 
 ## Overview
 
