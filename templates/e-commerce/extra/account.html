@@ -11,56 +11,56 @@
         <span>My Account</span>
       </a>
       
-      <a href="#" class="sidebar-item">
+      <a href="{% url 'orders' %}" class="sidebar-item">
         <i class="fas fa-shopping-bag"></i>
         <span>Orders</span>
       </a>
       
-      <a href="#" class="sidebar-item">
+      <a href="{% url 'inbox' %}" class="sidebar-item">
         <i class="fas fa-envelope"></i>
         <span>Inbox</span>
       </a>
       
-      <a href="#" class="sidebar-item">
+      <a href="{% url 'reviews' %}" class="sidebar-item">
         <i class="fas fa-comment"></i>
         <span>Pending Reviews</span>
       </a>
       
-      <a href="#" class="sidebar-item">
+      <a href="{% url 'vouchers' %}" class="sidebar-item">
         <i class="fas fa-ticket-alt"></i>
         <span>Vouchers</span>
       </a>
       
-      <a href="#" class="sidebar-item">
+      <a href="{% url 'wishlist' %}" class="sidebar-item">
         <i class="fas fa-heart"></i>
         <span>Wishlist</span>
       </a>
       
-      <a href="#" class="sidebar-item">
+      <a href="{% url 'followed_sellers' %}" class="sidebar-item">
         <i class="fas fa-store"></i>
         <span>Followed Sellers</span>
       </a>
       
-      <a href="#" class="sidebar-item">
+      <a href="{% url 'recently_viewed' %}" class="sidebar-item">
         <i class="fas fa-history"></i>
         <span>Recently Viewed</span>
       </a>
       
       <div class="sidebar-section">Account Management</div>
       
-      <a href="#" class="sidebar-item">
+      <a href="{% url 'payment_settings' %}" class="sidebar-item">
         <span>Payment Settings</span>
       </a>
       
-      <a href="#" class="sidebar-item">
+      <a href="{% url 'address_book' %}" class="sidebar-item">
         <span>Address Book</span>
       </a>
       
-      <a href="#" class="sidebar-item">
+      <a href="{% url 'newsletter_preferences' %}" class="sidebar-item">
         <span>Newsletter Preferences</span>
       </a>
       
-      <a href="#" class="sidebar-item">
+      <a href="{% url 'close_account' %}" class="sidebar-item">
         <span>Close Account</span>
       </a>
       
@@ -79,7 +79,7 @@
           <h2>ACCOUNT DETAILS</h2>
         </div>
         <div class="card-body">
-          <p class="user-name">{{ user.username}} | {{ user.phone_number }}</p>
+          <p class="user-name">{{ user.first_name }} {{ user.last_name }}</p>
           <p class="user-email">{{ user.email }}</p>
         </div>
       </div>
@@ -87,7 +87,7 @@
       <div class="account-card">
         <div class="card-header">
           <h2>ADDRESS BOOK</h2>
-          <a href="#" class="edit-link">
+          <a href="{% url 'edit_address' %}" class="edit-link">
             <i class="fas fa-pencil-alt"></i>
           </a>
         </div>
@@ -122,23 +122,10 @@
         </div>
         <div class="card-body">
           <p>Manage your email communications to stay updated with the latest news and offers.</p>
-          <a href="#" class="edit-newsletter">Edit Newsletter preferences</a>
+          <a href="{% url 'newsletter_preferences' %}" class="edit-newsletter">Edit Newsletter preferences</a>
         </div>
       </div>
     </div>
   </div>
 </div>
 {% endblock %}
-
-{% comment %}
-
-{% extends "base.html" %}
-
-{% block content %}
-  <h2>Welcome, {{ user.username }}</h2>
-  <p>Email: {{ user.email }}</p>
-  <p>Full Name: {{ user.get_full_name }}</p>
-  <!-- Add more details as needed -->
-{% endblock %}
-
-{% endcomment %}

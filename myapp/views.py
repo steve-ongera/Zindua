@@ -446,6 +446,45 @@ def pay_view(request):
 def order_success(request):
     return render(request, 'order_success.html')
 
+@login_required
+def orders_view(request):
+    # Get query parameter for tab selection (default to 'ongoing')
+    status = request.GET.get('status', 'ongoing')
+    
+    # Query the user's orders based on selected tab
+    if status == 'canceled':
+        orders = Order.objects.filter(
+            user=request.user,
+            status__in=['CANCELED', 'RETURNED']
+        ).order_by('-date_ordered')
+        
+        # Count for tab display
+        canceled_count = orders.count()
+        ongoing_count = Order.objects.filter(
+            user=request.user,
+            status__in=['PROCESSING', 'SHIPPED', 'DELIVERED']
+        ).count()
+    else:
+        orders = Order.objects.filter(
+            user=request.user,
+            status__in=['PROCESSING', 'SHIPPED', 'DELIVERED']
+        ).order_by('-date_ordered')
+        
+        # Count for tab display
+        ongoing_count = orders.count()
+        canceled_count = Order.objects.filter(
+            user=request.user,
+            status__in=['CANCELED', 'RETURNED']
+        ).count()
+    
+    context = {
+        'orders': orders,
+        'ongoing_count': ongoing_count,
+        'canceled_count': canceled_count
+    }
+    
+    return render(request, 'orders.html', context)
+
 def seller_profile(request, slug):
     seller = get_object_or_404(Seller, slug=slug)
     return render(request, 'seller_profile.html', {'seller': seller})
