@@ -1,5 +1,242 @@
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Register</button>
-</form>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - E-Store</title>
+    <link rel="stylesheet" href="{% static 'css/authentication.css' %}">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="logo-container">
+                <img src="{% static 'images/applogo.png' %}" alt="E-Store Logo" class="star-logo">
+            </div>
+            
+            <h1 class="welcome-text">Create an Account</h1>
+            <p class="instruction-text">
+                Please fill in the details below to create your account.
+            </p>
+            
+            <form method="post" action="{% url 'register' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                {% if messages %}
+                <div class="message-container">
+                    {% for message in messages %}
+                    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% if form.errors %}
+                <div class="error-container">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="error">{{ error }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <div class="error">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <div class="form-group">
+                    <input type="text" name="username" id="id_username" placeholder="Username*" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="email" name="email" id="id_email" placeholder="Email Address*" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="tel" name="phone_number" id="id_phone_number" placeholder="Phone Number*" required>
+                </div>
+                
+                <div class="form-group">
+                    <select name="role" id="id_role" class="form-select">
+                        <option value="" selected disabled>Select Role*</option>
+                        {% for value, text in form.fields.role.choices %}
+                            <option value="{{ value }}">{{ text }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <input type="text" name="location" id="id_location" placeholder="Location*" required>
+                </div>
+                
+                <div class="form-group file-input-container">
+                    <label for="id_profile_picture" class="file-input-label">Profile Picture</label>
+                    <input type="file" name="profile_picture" id="id_profile_picture" class="file-input">
+                    <span class="file-name">No file chosen</span>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" name="password" id="id_password" placeholder="Password*" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" name="confirm_password" id="id_confirm_password" placeholder="Confirm Password*" required>
+                </div>
+                
+                <div class="terms-checkbox">
+                    <input type="checkbox" name="agree_terms" id="agree_terms" required>
+                    <label for="agree_terms">I agree to the <a href="#">Terms and Conditions</a></label>
+                </div>
+                
+                <button type="submit" class="auth-button">Create Account</button>
+                
+                <div class="terms-text">
+                    By continuing you agree to our
+                    <a href="#">Terms and Conditions</a>
+                </div>
+            </form>
+            
+            <div class="social-login">
+                <button class="facebook-login">
+                    <i class="fab fa-facebook-f"></i>
+                    Sign up with Facebook
+                </button>
+            </div>
+            
+            <div class="login-link">
+                <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+            </div>
+            
+            <div class="help-text">
+                For further support, you may visit the
+                <a href="#">Help Center</a>
+                or contact our customer service team.
+            </div>
+        </div>
+        
+        <div class="footer-logo">
+            <img src="{% static 'images/applogo.png' %}" alt="E-Store">
+        </div>
+    </div>
+
+    <script>
+        // Display file name when a file is selected
+        document.getElementById('id_profile_picture').addEventListener('change', function() {
+            const fileName = this.files[0] ? this.files[0].name : 'No file chosen';
+            document.querySelector('.file-name').textContent = fileName;
+        });
+    </script>
+</body>
+</html>
+
+{% comment %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jumia | register </title>
+    <link rel="stylesheet" href="{% static 'css/authentication.css' %}">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="logo-container">
+                <img src="{% static 'images/applogo.png' %}" alt="E-Store Logo" class="star-logo">
+            </div>
+            
+            <h1 class="welcome-text">Create an Account</h1>
+            <p class="instruction-text">
+                Please fill in the details below to create your E-Store account.
+            </p>
+            
+            <form method="post" action="{% url 'register' %}">
+                {% csrf_token %}
+                
+                {% if messages %}
+                <div class="message-container">
+                    {% for message in messages %}
+                    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% if form.errors %}
+                <div class="error-container">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="error">{{ error }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <div class="form-group">
+                    <input type="text" name="first_name" id="first_name" placeholder="First Name*" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="text" name="last_name" id="last_name" placeholder="Last Name*" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="email" name="email" id="email" placeholder="Email Address*" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="tel" name="phone" id="phone" placeholder="Phone Number">
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" name="password1" id="password1" placeholder="Password*" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" name="password2" id="password2" placeholder="Confirm Password*" required>
+                </div>
+                
+                <div class="terms-checkbox">
+                    <input type="checkbox" name="agree_terms" id="agree_terms" required>
+                    <label for="agree_terms">I agree to the E-Store <a href="#">Terms and Conditions</a></label>
+                </div>
+                
+                <button type="submit" class="auth-button">Create Account</button>
+                
+                <div class="terms-text">
+                    By continuing you agree to E-Store's
+                    <a href="#">Terms and Conditions</a>
+                </div>
+            </form>
+            
+            <div class="social-login">
+                <button class="facebook-login">
+                    <i class="fab fa-facebook-f"></i>
+                    Sign up with Facebook
+                </button>
+            </div>
+            
+            <div class="login-link">
+                <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+            </div>
+            
+            <div class="help-text">
+                For further support, you may visit the
+                <a href="#">Help Center</a>
+                or contact our customer service team.
+            </div>
+        </div>
+        
+        <div class="footer-logo">
+            <img src="{% static 'images/applogo.png' %}" alt="E-Store">
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+{% endcomment %}

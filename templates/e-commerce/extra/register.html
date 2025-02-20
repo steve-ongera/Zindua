@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - E-Store</title>
+    <link rel="stylesheet" href="{% static 'css/authentication.css' %}">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="logo-container">
+                <img src="{% static 'images/logo.png' %}" alt="E-Store Logo" class="star-logo">
+            </div>
+            
+            <h1 class="welcome-text">Create an Account</h1>
+            <p class="instruction-text">
+                Please fill in the details below to create your E-Store account.
+            </p>
+            
+            <form method="post" action="{% url 'register' %}">
+                {% csrf_token %}
+                
+                {% if messages %}
+                <div class="message-container">
+                    {% for message in messages %}
+                    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% if form.errors %}
+                <div class="error-container">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="error">{{ error }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <div class="form-group">
+                    <input type="text" name="first_name" id="first_name" placeholder="First Name*" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="text" name="last_name" id="last_name" placeholder="Last Name*" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="email" name="email" id="email" placeholder="Email Address*" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="tel" name="phone" id="phone" placeholder="Phone Number">
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" name="password1" id="password1" placeholder="Password*" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" name="password2" id="password2" placeholder="Confirm Password*" required>
+                </div>
+                
+                <div class="terms-checkbox">
+                    <input type="checkbox" name="agree_terms" id="agree_terms" required>
+                    <label for="agree_terms">I agree to the E-Store <a href="{% url 'terms' %}">Terms and Conditions</a></label>
+                </div>
+                
+                <button type="submit" class="auth-button">Create Account</button>
+                
+                <div class="terms-text">
+                    By continuing you agree to E-Store's
+                    <a href="{% url 'terms' %}">Terms and Conditions</a>
+                </div>
+            </form>
+            
+            <div class="social-login">
+                <button class="facebook-login">
+                    <i class="fab fa-facebook-f"></i>
+                    Sign up with Facebook
+                </button>
+            </div>
+            
+            <div class="login-link">
+                <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+            </div>
+            
+            <div class="help-text">
+                For further support, you may visit the
+                <a href="{% url 'help_center' %}">Help Center</a>
+                or contact our customer service team.
+            </div>
+        </div>
+        
+        <div class="footer-logo">
+            <img src="{% static 'images/footer-logo.png' %}" alt="E-Store">
+        </div>
+    </div>
+</body>
+</html>
