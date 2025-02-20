@@ -401,7 +401,7 @@ def checkout_view(request):
 
     }
     
-    return render(request, 'checkout.html', context)
+    return render(request, 'checkout2.html', context)
 
 
 @login_required

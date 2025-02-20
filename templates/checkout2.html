@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout | Jumia{% endblock %}
+<!-- Font Awesome CDN -->
+
+
+{% block content %}
+<div class="checkout-container">
+    <div class="checkout-steps">
+        <div class="step completed">
+            <div class="step-icon">
+                <i class="fas fa-check-circle"></i>
+                <span class="step-number"> 1. CUSTOMER ADDRESS</span>
+            </div>
+            <div class="change-link">
+                <a href="#">Change <i class="fas fa-chevron-right"></i></a>
+            </div>
+        </div>
+        
+        <div class="address-details">
+            <p class="customer-name">{{ order.customer_name }}</p>
+            <p class="address-line">Muranga, Town | Murang'a - Murang'a Town | {{ order.phone }}</p>
+        </div>
+        
+        <div class="step completed">
+            <div class="step-icon">
+                <i class="fas fa-check-circle"></i>
+                <span class="step-number"> 2. DELIVERY DETAILS</span>
+            </div>
+            <div class="change-link">
+                <a href="#">Change <i class="fas fa-chevron-right"></i></a>
+            </div>
+        </div>
+        
+        <div class="delivery-details">
+            <div class="pickup-info">
+                <h3>Pick-up Station</h3>
+                <p>Delivery between <strong>24 February</strong> and <strong>27 February</strong></p>
+            </div>
+            
+            <div class="station-details">
+                <div class="station-header">
+                    <h4>Pickup Station</h4>
+                    <div class="change-link">
+                        <a href="#">Change <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                </div>
+                <div class="station-address">
+                    <p><strong>Jumia TRD Kutus Station</strong></p>
+                    <p>Jumia TRD Kutus Station - Terrace Villa building Groundfloor Room A7 Along Kutus Mjini road near Family Bank Kutus, near Family Bank Kutus | Kirinyaga - Kutus</p>
+                </div>
+            </div>
+
+            <div class="shipment-container">
+                {% for shipment in shipments %}
+                <div class="shipment-section">
+                    <div class="shipment-header">
+                        <span>Shipment {{ forloop.counter }}/{{ shipments|length }}</span>
+                        <span class="fulfillment-info">Fulfilled by {{ shipment.fulfilled_by }}</span>
+                    </div>
+                    
+                    <div class="shipment-details">
+                        <div class="pickup-info">
+                            <h4>Pick-up Station</h4>
+                            <p>Delivery {% if shipment.scheduled %}scheduled on{% else %}between{% endif %} {{ shipment.delivery_date }}</p>
+                            
+                            <div class="product-item">
+                                <img src="{{ shipment.product.image.url }}" alt="{{ shipment.product.name }}">
+                                <div class="product-details">
+                                    <p class="product-name">{{ shipment.product.name }}</p>
+                                    <p class="product-qty">QTY: {{ shipment.quantity }}</p>
+                                    {% if shipment.profile_picture %}
+                                       <img src="{{ shipment.profile_picture.url }}" alt="{{ shipment.fulfilled_by }}" class="vendor-logo">
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            
+            
+            <div class="modify-cart">
+                <a href="{% url 'cart' %}">Modify cart</a>
+            </div>
+        </div>
+        
+        <div class="step current">
+            <div class="step-icon">
+                <i class="fas fa-check-circle"></i>
+                <span class="step-number"> 3. PAYMENT METHOD</span>
+            </div>
+            <div class="change-link">
+                <a href="#">Change <i class="fas fa-chevron-right"></i></a>
+            </div>
+        </div>
+        
+        <div class="payment-details">
+            <div class="payment-method">
+                <h3>Pay Now with M-Pesa</h3>
+                <p>Pay now fast and securely with your Mpesa account.</p>
+                <div class="mpesa-logo">
+                    <img src="{% static 'img/mpesa.png' %}" alt="M-Pesa">
+                </div>
+            </div>
+        </div>
+        
+        <div class="back-link">
+            <a href="{% url 'cart' %}"><i class="fas fa-chevron-left"></i> Go back & continue shopping</a>
+        </div>
+    </div>
+    
+    <div class="order-summary">
+        <h2>Order summary</h2>
+        <div class="summary-details">
+            <div class="summary-row">
+                <span>Item's total  ({{ total_items }})</span>
+                <span class="price">KSh {{ items_total|floatformat:0 }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Delivery fees</span>
+                <span class="price">KSh {{ delivery_fee }}</span>
+            </div>
+            <div class="summary-row total">
+                <span>Total</span>
+                <span class="price">KSh {{ order_total|floatformat:0 }}</span>
+            </div>
+        </div>
+        
+        <div class="voucher-section">
+            <form method="POST" action="#">
+                {% csrf_token %}
+                <div class="voucher-input">
+                    <input type="text" name="voucher_code" placeholder="Enter code here">
+                    <button type="submit">APPLY</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="confirm-order">
+            <form action="{% url 'pay' %}" method="get">
+                {% csrf_token %}
+                <button type="submit">Confirm order</button>
+            </form>
+        </div>
+        
+        <div class="terms-notice">
+            <p>By proceeding, you are automatically accepting the <a href="#">Terms & Conditions</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
