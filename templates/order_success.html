@@ -1,28 +1,24 @@
-<!-- Order Success Modal (Initially Hidden) -->
-<div id="orderSuccessModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
-        <h2 class="text-2xl font-bold text-green-600">Payment Successful!</h2>
-        <p class="text-gray-700 mt-2">Your order has been placed successfully.</p>
-        <button id="closeModal" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg">
-            OK
-        </button>
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Success{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/success.css' %}">
+
+<div class="success-container">
+  <div class="success-card">
+    <div class="success-icon">
+      <svg viewBox="0 0 24 24" width="64" height="64">
+        <circle cx="12" cy="12" r="11" fill="#4CAF50" />
+        <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="white" />
+      </svg>
     </div>
+    <h1>Success!</h1>
+    <p>Your operation has been completed successfully.</p>
+    <div class="success-actions">
+      <a href="{% url 'home' %}" class="btn-primary">Back to Home</a>
+      <a href="javascript:history.back()" class="btn-secondary">Go Back</a>
+    </div>
+  </div>
 </div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        {% if request.GET.success %}
-            let modal = document.getElementById("orderSuccessModal");
-            modal.classList.remove("hidden");
-
-            // Auto redirect after 3 seconds
-            setTimeout(function () {
-                window.location.href = "/";
-            }, 3000);
-
-            document.getElementById("closeModal").addEventListener("click", function () {
-                window.location.href = "/";
-            });
-        {% endif %}
-    });
-</script>
+{% endblock %}

@@ -435,6 +435,13 @@ def pay_view(request):
         order.status = 'completed'
         order.save()
 
+    
+       
+        # Get the user's cart and delete the items
+        user_cart = Cart.objects.filter(user=user).first()
+        if user_cart:
+            CartItem.objects.filter(cart=user_cart).delete()
+
         messages.success(request, "Payment successful! Your order has been placed.")
         return redirect('order_success')
 
