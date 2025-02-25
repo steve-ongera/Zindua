@@ -30,6 +30,7 @@ class User(AbstractUser):
     ROLE_CHOICES = [
         ('CLIENT', 'Client'),
         ('SERVICE_PROVIDER', 'Service Provider'),
+        ('NORMAL_USER', 'Normal user'),
     ]
 
     email = models.EmailField(unique=True)  # Ensure email is unique
