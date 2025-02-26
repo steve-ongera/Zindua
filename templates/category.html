@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ category_name }} - Your Store{% endblock %}
+{% block title %}{{ category.name }} - Jumia {% endblock %}
 
 {% block extra_css %}
 
@@ -9,6 +9,8 @@
 {% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/category.css' %}">
+
 <div class="category-container">
     <div class="sidebar">
         <div class="category-section">
@@ -127,7 +129,13 @@
                     {% endif %}
                 </div>
                 <div class="product-info">
-                    <h3 class="product-name">{{ product.name}} </h3>
+                    <h3 class="product-name" title="{{ product.name }}">
+                        {% if product.name|length > 54 %}
+                            {{ product.name|slice:":54" }} ...
+                        {% else %}
+                            {{ product.name }}
+                        {% endif %}
+                    </h3>
                     <div class="product-price">
                         <span class="current-price">KSh {{ product.price|floatformat:0 }}</span>
                         {% if product.price %}

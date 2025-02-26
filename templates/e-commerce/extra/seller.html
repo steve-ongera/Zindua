@@ -1,28 +1,24 @@
 {% extends 'base.html' %}
-{% load static %}
+
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/seller.css' %}">
- 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <div class="seller-container">
   <!-- Breadcrumb Navigation -->
   <div class="breadcrumb">
     <a href="{% url 'home' %}">Home</a> &gt; 
-    <span>{{ seller.store_name }}</span>
+    <span>{{ seller.name }}</span>
   </div>
 
   <!-- Seller Header Section -->
   <div class="seller-header">
     <div class="seller-info">
-      <h1>{{ seller.store_name }}</h1>
+      <h1>{{ seller.name }}</h1>
       <div class="seller-score">{{ seller.score }}% Seller Score</div>
       <div class="seller-origin">Country of Origin: {{ seller.country }}</div>
     </div>
     <div class="seller-actions">
       <div class="seller-followers">{{ seller.followers }} Followers</div>
       <button class="follow-btn">Follow</button>
-      <a href="#" class="see-profile">See Profile </a>
+      <a href="#" class="see-profile">See Profile &gt;</a>
     </div>
   </div>
 
@@ -59,7 +55,7 @@
       <div class="filter-section">
         <h3>PRICE (KSH)</h3>
         <div class="price-range">
-          
+          <input type="range" min="1000" max="50000" class="slider" id="price-range">
           <div class="price-inputs">
             <input type="number" id="min-price" placeholder="1600">
             <span>-</span>
@@ -269,16 +265,14 @@
       </div>
 
       <div class="products-grid">
-        {% for product in seller.products.all %}
+        {% for product in products %}
         <div class="product-card">
           <div class="product-img">
-            <a href="{% url 'product_detail' slug=product.slug %}">
-               <img src="{{ product.image.url }}" alt="{{ product.name }}">
-            </a>
-            {% if product.discount_percentage %}
-               <div class="discount-badge">-{{ product.discount_percentage}}%</div>
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% if product.discount %}
+            <div class="discount-badge">-{{ product.discount }}%</div>
             {% endif %}
-            <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+            <button class="wishlist-btn"><i class="fa fa-heart-o"></i></button>
           </div>
           <div class="product-details">
             <h3 class="product-title">{{ product.name }}</h3>
@@ -293,9 +287,13 @@
             </div>
             <div class="product-rating">
               <div class="stars">
-                
-                    <span class="star-filled">★★★★★</span>
-                  
+                {% for i in range(5) %}
+                  {% if i < product.rating %}
+                    <span class="star-filled">★</span>
+                  {% else %}
+                    <span class="star-empty">☆</span>
+                  {% endif %}
+                {% endfor %}
               </div>
               <span class="rating-count">({{ product.review_count }})</span>
             </div>
@@ -312,34 +310,3 @@
   </div>
 </div>
 {% endblock %}
-
-{%comment %}
-{% extends 'base.html' %}
-
-{% block content %}
-  <div class="seller-profile">
-    <h1>{{ seller.store_name }}'s Profile</h1>
-    
-    <!-- Display the seller's details -->
-    <div class="seller-info">
-      <p><strong>Name:</strong> {{ seller.name }}</p>
-      <p><strong>Slug:</strong> {{ seller.slug }}</p>
-      <!-- Add more fields as necessary, for example, an image or bio -->
-    </div>
-
-    <!-- Optionally list the products sold by the seller -->
-    <h2>Products sold by {{ seller.name }}:</h2>
-    <ul>
-      {% for product in seller.products.all %}
-        <li>
-          <a href="{% url 'product_detail' slug=product.slug %}">{{ product.name }}</a>
-        </li>
-      {% empty %}
-        <li>No products listed.</li>
-      {% endfor %}
-    </ul>
-
-    <!-- Optionally, you could add more seller-related content here -->
-  </div>
-{% endblock %}
-{% endcomment %}
