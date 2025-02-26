@@ -504,7 +504,16 @@ def orders_view(request):
 
 def seller_profile(request, slug):
     seller = get_object_or_404(Seller, slug=slug)
-    return render(request, 'seller_profile.html', {'seller': seller})
+    # Precompute the followers count to avoid template issues
+    followers_count = seller.followers.count()
+
+    context = {
+        'seller': seller,
+        'followers_count': followers_count,
+        
+       
+    }
+    return render(request, 'seller_profile.html', context)
 
 def search_view(request):
     query = request.GET.get('q', '')

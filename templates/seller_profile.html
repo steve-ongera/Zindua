@@ -20,7 +20,7 @@
       <div class="seller-origin">Country of Origin: {{ seller.country }}</div>
     </div>
     <div class="seller-actions">
-      <div class="seller-followers">{{ seller.followers }} Followers</div>
+      <div class="seller-followers">{{ followers_count }} Followers</div>
       <button class="follow-btn">Follow</button>
       <a href="#" class="see-profile">See Profile </a>
     </div>
@@ -283,7 +283,7 @@
           <div class="product-details">
             <h3 class="product-title">{{ product.name }}</h3>
             <div class="product-price">
-              <div class="current-price">KSh {{ product.current_price }}</div>
+              <div class="current-price">KSh {{ product.price }}</div>
               {% if product.original_price %}
               <div class="original-price">KSh {{ product.original_price }}</div>
               {% endif %}
@@ -297,7 +297,7 @@
                     <span class="star-filled">★★★★★</span>
                   
               </div>
-              <span class="rating-count">({{ product.review_count }})</span>
+              <span class="rating-count">({{ product.total_reviews }})</span>
             </div>
             {% if product.express %}
             <div class="express-tag">

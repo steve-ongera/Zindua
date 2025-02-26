@@ -180,11 +180,17 @@ class Seller(models.Model):
     bio = models.TextField(blank=True, null=True)
     contact_email = models.EmailField()
     phone_number = models.CharField(max_length=15)
-
     slug = models.SlugField(unique=True, blank=True, null=True)
+
+    score = models.DecimalField(max_digits=3, decimal_places=1, default=0.0)
+    followers = models.ManyToManyField(User, related_name='followed_sellers', blank=True)
 
     def __str__(self):
         return self.store_name
+
+    @property
+    def followers_count(self):
+        return self.followers.count()
 
     # Automatically generate slug from store_name
     def save(self, *args, **kwargs):
