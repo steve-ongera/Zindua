@@ -506,10 +506,12 @@ def seller_profile(request, slug):
     seller = get_object_or_404(Seller, slug=slug)
     # Precompute the followers count to avoid template issues
     followers_count = seller.followers.count()
+    product_count = Product.objects.filter(seller=seller).count()  # Count the products only
 
     context = {
         'seller': seller,
         'followers_count': followers_count,
+        'product_count': product_count,  # Pass the product count
         
        
     }

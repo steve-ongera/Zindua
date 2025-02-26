@@ -17,7 +17,7 @@
     <div class="seller-info">
       <h1>{{ seller.store_name }}</h1>
       <div class="seller-score">{{ seller.score }}% Seller Score</div>
-      <div class="seller-origin">Country of Origin: {{ seller.country }}</div>
+      <div class="seller-origin">Country of Origin: Kenya {{ seller.country }}</div>
     </div>
     <div class="seller-actions">
       <div class="seller-followers">{{ followers_count }} Followers</div>
@@ -253,7 +253,7 @@
 
     <div class="products-container">
       <div class="products-header">
-        <h2>{{ seller.name }} <span class="product-count">({{ products|length }} products found)</span></h2>
+        <h2>{{ seller.store_name }} <span class="product-count">({{ product_count }} products found)</span></h2>
         <div class="products-filters">
           <div class="express-tag">
             <input type="checkbox" id="express-filter" name="express-filter">
