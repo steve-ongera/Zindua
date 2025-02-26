@@ -43,6 +43,7 @@ urlpatterns = [
     path('category/<slug:slug>/', views.category_view, name='category'),
     path('brand/<slug:slug>/', views.brand_view, name='brand'),
     path('seller/<slug:slug>/', views.seller_profile, name='seller_profile'),
+    path('seller/<slug:slug>/follow/', views.follow_seller, name='follow_seller'),
 
     ## Other URL patterns admin urls
     

@@ -515,6 +515,19 @@ def seller_profile(request, slug):
     }
     return render(request, 'seller_profile.html', context)
 
+@login_required
+def follow_seller(request, slug):
+    seller = get_object_or_404(Seller, slug=slug)
+
+    if request.user in seller.followers.all():
+        seller.followers.remove(request.user)
+        messages.success(request, 'You have unfollowed this seller.')
+    else:
+        seller.followers.add(request.user)
+        messages.success(request, 'You are now following this seller.')
+
+    return redirect('seller_profile', slug=slug)
+
 def search_view(request):
     query = request.GET.get('q', '')
     

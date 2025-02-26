@@ -8,7 +8,7 @@
 <div class="seller-container">
   <!-- Breadcrumb Navigation -->
   <div class="breadcrumb">
-    <a href="{% url 'home' %}">Home</a> &gt; 
+    <a href="{% url 'home' %}">Home</a> /
     <span>{{ seller.store_name }}</span>
   </div>
 
@@ -21,7 +21,18 @@
     </div>
     <div class="seller-actions">
       <div class="seller-followers">{{ followers_count }} Followers</div>
-      <button class="follow-btn">Follow</button>
+      
+      <form method="post" action="{% url 'follow_seller' seller.slug %}">
+          {% csrf_token %}
+          <button type="submit" class="follow-btn">
+              {% if user in seller.followers.all %}
+                  Unfollow
+              {% else %}
+                  Follow
+              {% endif %}
+          </button>
+      </form>
+    
       <a href="#" class="see-profile">See Profile </a>
     </div>
   </div>
