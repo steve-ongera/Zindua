@@ -443,31 +443,45 @@ def pay_view(request):
             messages.error(request, "All fields are required.")
             return redirect('pay')
 
+        # Create a transaction
         transaction = Transaction.objects.create(
             user=user,
             order=order,
             name=name,
             id_number=id_number,
             phone_number=phone_number,
-            amount=order.get_order_total,  # Ensure this returns the correct total
+            amount=order.get_order_total,  # Ensure this method returns the correct total
             status="completed"  # Change this based on actual payment processing
         )
 
+        # Update the order status
         order.status = 'completed'
         order.save()
 
-    
-       
-        # Get the user's cart and delete the items
+        # Get the user's cart
         user_cart = Cart.objects.filter(user=user).first()
+
         if user_cart:
-            CartItem.objects.filter(cart=user_cart).delete()
+            cart_items = CartItem.objects.filter(cart=user_cart)
+
+            # Reduce stock for each product in the cart
+            for item in cart_items:
+                product = item.product
+                if product.stock >= item.quantity:
+                    product.stock -= item.quantity
+                    product.save()
+                else:
+                    messages.error(request, f"Not enough stock for {product.name}")
+                    return redirect('checkout_view')
+
+            # Delete the cart items after reducing stock
+            cart_items.delete()
 
         messages.success(request, "Payment successful! Your order has been placed.")
         return redirect('order_success')
 
     context = {
-        "order_total": order.get_order_total  # Ensure this returns the correct total
+        "order_total": order.get_order_total  # Ensure this method returns the correct total
     }
     return render(request, "pay.html", context)
 
