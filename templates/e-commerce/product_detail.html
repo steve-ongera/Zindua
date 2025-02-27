@@ -35,7 +35,7 @@
       </div>
       <div class="thumbnails">
         {% for image in product.product_images.all %}
-        <div class="thumbnail {% if forloop.first %}active{% endif %}" data-image-url="{{ image.url }}">
+        <div class="thumbnail {% if forloop.first %}active{% endif %}" data-image-url="{{ image.image.url }}">
           <img src="{{ image.image.url }}" alt="{{ product.name }} - Image {{ forloop.counter }}">
         </div>
         {% endfor %}
@@ -339,22 +339,7 @@
       });
     });
     
-    // Quantity selector
-    const decreaseBtn = document.querySelector('.decrease-qty');
-    const increaseBtn = document.querySelector('.increase-qty');
-    const quantityInput = document.querySelector('.quantity-input');
     
-    decreaseBtn.addEventListener('click', function() {
-      let value = parseInt(quantityInput.value);
-      if (value > 1) {
-        quantityInput.value = value - 1;
-      }
-    });
-    
-    increaseBtn.addEventListener('click', function() {
-      let value = parseInt(quantityInput.value);
-      quantityInput.value = value + 1;
-    });
     
     // Accordion functionality
     const accordionHeaders = document.querySelectorAll('.accordion-header');
@@ -369,9 +354,3 @@
 </script>
 
 {% endblock %}
-{% comment %}
-<h2>{{ product.name }}</h2>
-<p>{{ product.description }}</p>
-<p>Price: ${{ product.price }}</p>
-<img src="{{ product.image.url }}" alt="{{ product.name }}">
-{% endcomment %}
