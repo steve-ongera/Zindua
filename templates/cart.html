@@ -74,33 +74,59 @@
 
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-  
-      // Handle quantity changes
-      document.querySelectorAll('.item-quantity').forEach(container => {
-          const decreaseBtn = container.querySelector('.decrease-qty');
-          const increaseBtn = container.querySelector('.increase-qty');
-          const input = container.querySelector('.quantity-input');
-          const itemId = container.dataset.itemId;
-  
-          decreaseBtn.addEventListener('click', () => updateQuantity(itemId, 'decrease'));
-          increaseBtn.addEventListener('click', () => updateQuantity(itemId, 'increase'));
-      });
-  
-      // Handle remove buttons
-      document.querySelectorAll('.remove-item-form').forEach(form => {
-          form.addEventListener('submit', function(e) {
-              e.preventDefault();
-              const itemId = this.closest('.cart-item').dataset.itemId; // Ensure correct ID
-              removeItem(itemId);
-          });
-      });
+    document.addEventListener('DOMContentLoaded', function() {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     
+        // Add CSS for the error popup dynamically
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .error-popup {
+                position: fixed;
+                top: 20px;
+                right: -300px;  /* Start off the screen to the right */
+                width: 250px;
+                background-color: #ff4d4d;
+                color: white;
+                padding: 15px;
+                border-radius: 5px;
+                box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+                z-index: 1000;
+                transition: right 0.5s ease;  /* Animate the right property */
+            }
+            .error-popup.show {
+                right: 20px;  /* Slide in from the right */
+            }
+        `;
 
-      // update quantity
-  
-      function updateQuantity(itemId, action) {
+        document.head.appendChild(style);
+    
+        // Add error popup container to the body
+        const errorPopupContainer = document.createElement('div');
+        errorPopupContainer.classList.add('error-popup');
+        document.body.appendChild(errorPopupContainer);
+    
+        // Handle quantity changes
+        document.querySelectorAll('.item-quantity').forEach(container => {
+            const decreaseBtn = container.querySelector('.decrease-qty');
+            const increaseBtn = container.querySelector('.increase-qty');
+            const input = container.querySelector('.quantity-input');
+            const itemId = container.dataset.itemId;
+    
+            decreaseBtn.addEventListener('click', () => updateQuantity(itemId, 'decrease'));
+            increaseBtn.addEventListener('click', () => updateQuantity(itemId, 'increase'));
+        });
+    
+        // Handle remove buttons
+        document.querySelectorAll('.remove-item-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const itemId = this.closest('.cart-item').dataset.itemId;
+                removeItem(itemId);
+            });
+        });
+    
+        // Update quantity
+        function updateQuantity(itemId, action) {
             fetch('{% url "update_cart_item" %}', {
                 method: 'POST',
                 headers: {
@@ -115,69 +141,86 @@
                     const itemContainer = document.querySelector(`.cart-item[data-item-id="${itemId}"]`);
                     const quantityInput = itemContainer.querySelector('.quantity-input');
                     const priceElement = itemContainer.querySelector('.current-price');
-        
+    
                     quantityInput.value = data.quantity;
-        
+    
                     // Update product total price
                     priceElement.textContent = `KSh ${data.item_total}`;
-        
+    
                     // Update subtotal and checkout button
                     document.querySelector('.subtotal span:last-child').textContent = `KSh ${data.cart_subtotal}`;
                     document.querySelector('.checkout-btn').textContent = `Checkout (KSh ${data.cart_subtotal})`;
+                } else if (data.status === 'error') {
+                    showErrorPopup(data.message);
                 }
             })
             .catch(error => console.error('Error:', error));
         }
-        
-  
-      function removeItem(itemId) {
-        if (!itemId) return;
-
-        fetch(`/cart/remove/${itemId}/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrfToken,
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            credentials: 'same-origin'
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                // Remove item from DOM
-                const itemContainer = document.querySelector(`.cart-item[data-item-id="${itemId}"]`);
-                if (itemContainer) {
-                    itemContainer.remove();
-
-                    // Update subtotal displays
-                    const subtotalElements = document.querySelectorAll('.cart-subtotal');
-                    subtotalElements.forEach(el => {
-                        el.textContent = `KSh ${data.cart_subtotal}`;
-                    });
-
-                    const checkoutBtn = document.querySelector('.checkout-btn');
-                    if (checkoutBtn) {
-                        checkoutBtn.textContent = `Checkout (KSh ${data.cart_subtotal})`;
+    
+        // Function to show the error pop-out
+        function showErrorPopup(message) {
+            const errorPopup = document.querySelector('.error-popup');
+            errorPopup.textContent = message;
+            errorPopup.classList.add('show');
+    
+            // Automatically hide after 3 seconds
+            setTimeout(() => {
+                errorPopup.classList.remove('show');
+            }, 3000);
+        }
+    
+        // Function to remove item from cart
+        function removeItem(itemId) {
+            if (!itemId) return;
+    
+            fetch(`/cart/remove/${itemId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Remove item from DOM
+                    const itemContainer = document.querySelector(`.cart-item[data-item-id="${itemId}"]`);
+                    if (itemContainer) {
+                        itemContainer.remove();
+    
+                        // Update subtotal displays
+                        const subtotalElements = document.querySelectorAll('.cart-subtotal');
+                        subtotalElements.forEach(el => {
+                            el.textContent = `KSh ${data.cart_subtotal}`;
+                        });
+    
+                        const checkoutBtn = document.querySelector('.checkout-btn');
+                        if (checkoutBtn) {
+                            checkoutBtn.textContent = `Checkout (KSh ${data.cart_subtotal})`;
+                        }
+    
+                        // Update cart count in header
+                        const cartCount = document.querySelector('.cart-count');
+                        if (cartCount) {
+                            cartCount.textContent = data.cart_count;
+                        }
+    
+                        // Update cart header count
+                        const cartHeader = document.querySelector('.cart-header h1');
+                        if (cartHeader) {
+                            const currentCount = document.querySelectorAll('.cart-item').length;
+                            cartHeader.textContent = `Cart (${currentCount})`;
+                        }
                     }
-
-                    // Update cart count in header
-                    const cartCount = document.querySelector('.cart-count');
-                    if (cartCount) {
-                        cartCount.textContent = data.cart_count;
-                    }
-
-                    // Update cart header count
-                    const cartHeader = document.querySelector('.cart-header h1');
-                    if (cartHeader) {
-                        const currentCount = document.querySelectorAll('.cart-item').length;
-                        cartHeader.textContent = `Cart (${currentCount})`;
-                    }
+                } else if (data.status === 'error') {
+                    showErrorPopup(data.message);
                 }
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    }
-  });
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    });
+    
   </script>
 
 

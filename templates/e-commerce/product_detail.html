@@ -93,14 +93,7 @@
           {% csrf_token %}
           <div class="quantity-selector">
             <button type="button" class="decrease-qty" aria-label="Decrease quantity">-</button>
-            <input type="number" 
-            class="quantity-input" 
-            name="quantity" 
-            value="1" 
-            min="1"
-            max="{{ product.stock }}"
-            data-stock="{{ product.stock }}"
-            required>
+            <input type="number" class="quantity-input" name="quantity" value="1"  min="1" max="{{ product.stock }}" data-stock="{{ product.stock }}" required>
             <button type="button" class="increase-qty" aria-label="Increase quantity">+</button>
           </div>
          

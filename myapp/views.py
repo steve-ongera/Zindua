@@ -228,6 +228,8 @@ def cart_view(request):
     
     return render(request, 'cart.html', context)
 
+
+
 @login_required
 def update_cart_item(request):
     if request.method == 'POST':
@@ -236,11 +238,23 @@ def update_cart_item(request):
         
         try:
             cart_item = CartItem.objects.get(id=item_id, cart__user=request.user)
+            product_stock = cart_item.product.stock  # Assuming the stock field is named 'stock'
             
             if action == 'increase':
-                cart_item.quantity += 1
+                # Check if increasing the quantity exceeds the available stock
+                if cart_item.quantity < product_stock:
+                    cart_item.quantity += 1
+                    cart_item.save()
+                else:
+                    return JsonResponse({
+                        'status': 'error',
+                        'message': 'Maximum stock reached'
+                    })
+                
             elif action == 'decrease' and cart_item.quantity > 1:
                 cart_item.quantity -= 1
+                cart_item.save()
+                
             elif action == 'remove':
                 cart_item.delete()
                 return JsonResponse({
@@ -248,11 +262,9 @@ def update_cart_item(request):
                     'message': 'Item removed',
                     'cart_subtotal': sum(item.subtotal() for item in request.user.cart.items.all())
                 })
-            
-            cart_item.save()
 
             # Calculate updated subtotal
-            cart_items = CartItem.objects.all()
+            cart_items = CartItem.objects.filter(cart__user=request.user)
             cart_subtotal = sum(item.product.price * item.quantity for item in cart_items)
             
             # Return updated cart information
@@ -261,14 +273,13 @@ def update_cart_item(request):
                 'quantity': cart_item.quantity,
                 'item_total': cart_item.product.price * cart_item.quantity,
                 'cart_subtotal': cart_subtotal
-                # 'item_subtotal': cart_item.subtotal(),
-                # 'cart_subtotal': sum(item.subtotal() for item in request.user.cart.items.all())
             })
             
         except CartItem.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Item not found'}, status=404)
     
     return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+
 
 
 @login_required
