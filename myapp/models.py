@@ -254,7 +254,7 @@ class Subcategory(models.Model):
     def __str__(self):
         return self.name
 
-
+from decimal import Decimal
 
 class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
@@ -287,7 +287,19 @@ class Product(models.Model):
         if not self.slug:
             unique_id = uuid.uuid4().hex[:6]  # Generates a unique 6-character string
             self.slug = slugify(f"{self.name}-{unique_id}")
+
+        # Calculate original price based on discount percentage
+        if self.discount_percentage and self.discount_percentage > 0:
+            # Convert the discount calculation to Decimal to avoid type errors
+            discount_factor = Decimal('1') - (Decimal(self.discount_percentage) / Decimal('100'))
+            self.original_price = (self.price / discount_factor).quantize(Decimal('0.01'))
+        else:
+            # If no discount, original price is the same as price
+            self.original_price = self.price
+
         super().save(*args, **kwargs)
+
+       
 
     def __str__(self):
         return self.name

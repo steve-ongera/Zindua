@@ -11,7 +11,7 @@
       <li><a href="{% url 'home' %}">Home</a></li>
       <li><a href="{% url 'category' product.category.slug %}">{{ product.category.name }}</a></li>
       {% if product.subcategory %}
-      <li><a href="{% url 'subcategory' product.subcategory.slug %}">{{ product.subcategory.name }}</a></li>
+      <li><a href="#">{{ product.subcategory.name }}</a></li>
       {% endif %}
       <li><span>{{ product.name }}</span></li>
     </ul>
