@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const decreaseBtn = document.querySelector('.decrease-qty');
     const increaseBtn = document.querySelector('.increase-qty');
     const addToCartForm = document.querySelector('.add-to-cart-section form');
+
+    // Get the maximum stock from the data attribute
+    const maxStock = parseInt(quantityInput.getAttribute('data-stock')) || 0;
     
     // Handle quantity decrease
     decreaseBtn.addEventListener('click', function() {
@@ -11,20 +14,30 @@ document.addEventListener('DOMContentLoaded', function() {
             quantityInput.value = currentValue - 1;
         }
     });
-    
-    // Handle quantity increase
+
+    // Handle quantity increase with stock limit
     increaseBtn.addEventListener('click', function() {
         let currentValue = parseInt(quantityInput.value);
-        quantityInput.value = currentValue + 1;
+        if (currentValue < maxStock) {
+            quantityInput.value = currentValue + 1;
+        } else {
+            showNotification(`Maximum available stock (${maxStock}) reached`, 'warning');
+        }
     });
     
-    // Prevent invalid input
+    // Prevent invalid input and enforce stock limit
     quantityInput.addEventListener('change', function() {
         let value = parseInt(this.value);
         if (isNaN(value) || value < 1) {
             this.value = 1;
+        } else if (value > maxStock) {
+            this.value = maxStock;
+            showNotification(`Cannot exceed available stock of ${maxStock}`, 'warning');
         }
     });
+    
+    
+    
     
     // Handle form submission
     addToCartForm.addEventListener('submit', function(e) {
