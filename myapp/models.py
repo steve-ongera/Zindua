@@ -297,6 +297,9 @@ class Product(models.Model):
             # If no discount, original price is the same as price
             self.original_price = self.price
 
+        # Update is_in_stock status based on stock quantity
+        self.is_in_stock = self.stock > 0
+
         super().save(*args, **kwargs)
 
        

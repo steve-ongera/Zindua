@@ -103,7 +103,17 @@
             required>
             <button type="button" class="increase-qty" aria-label="Increase quantity">+</button>
           </div>
-          <button type="submit" class="add-to-cart-btn">ADD TO CART</button>
+         
+          <button type="submit" class="add-to-cart-btn"
+            {% if not product.is_in_stock %} 
+                disabled style="background-color: grey; cursor: not-allowed;" 
+            {% endif %}>
+            {% if product.is_in_stock %} 
+                ADD TO CART 
+            {% else %} 
+                OUT OF STOCK 
+            {% endif %}
+         </button>
         </form>
       </div>
       
