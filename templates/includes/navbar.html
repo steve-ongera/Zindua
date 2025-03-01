@@ -132,9 +132,9 @@
       <div class="main-navigation">
         <ul>
           {% for category in main_categories %}
-          <li>
-            <a href="#">{{ category.name }}</a>
-          </li>
+            <li>
+              <a href="{% url 'category' slug=category.slug %}">{{ category.name }}</a>
+            </li>
           {% endfor %}
         </ul>
       </div>
