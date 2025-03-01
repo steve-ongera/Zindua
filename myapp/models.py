@@ -442,6 +442,7 @@ class Transaction(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('completed', 'Completed')], default='pending')
     timestamp = models.DateTimeField(auto_now_add=True)
+    pickup_station = models.ForeignKey(PickupStation, on_delete=models.SET_NULL, null=True, blank=True)
 
     def get_order_items_display(self):
         items = self.order.items.all()

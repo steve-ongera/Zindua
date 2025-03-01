@@ -468,6 +468,10 @@ def pay_view(request):
         if not name or not id_number or not phone_number:
             messages.error(request, "All fields are required.")
             return redirect('pay')
+        
+
+        # Get the pickup station selected during checkout
+        pickup_station = order.pickup_station  # No need to ask for this again
 
         # Create a transaction
         transaction = Transaction.objects.create(
@@ -477,7 +481,8 @@ def pay_view(request):
             id_number=id_number,
             phone_number=phone_number,
             amount=order.get_order_total,  # Ensure this method returns the correct total
-            status="completed"  # Change this based on actual payment processing
+            status="completed" , # Change this based on actual payment processing
+            pickup_station=pickup_station  # Save the selected pickup station
         )
 
         # Update the order status
