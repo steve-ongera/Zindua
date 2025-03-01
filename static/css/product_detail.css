@@ -649,3 +649,22 @@
       height: 160px;
     }
   }
+
+
+  /* Media query for smaller screens */
+@media screen and (max-width: 768px) {
+  .seller-section {
+    display: block; /* Ensure it's visible */
+    width: 100%; /* Full width on small screens */
+    overflow: hidden; /* Handle content overflow */
+  }
+  
+  .seller-performance {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically on small screens */
+  }
+  
+  .seller-button {
+    margin-top: 10px; /* Add some spacing */
+  }
+}
