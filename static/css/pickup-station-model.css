@@ -1,0 +1,84 @@
+/* Modal Styles */
+.pickup-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.pickup-modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pickup-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.close-modal {
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.station-search {
+    margin-bottom: 20px;
+}
+
+.station-search input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.station-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.station-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.station-item:last-child {
+    border-bottom: none;
+}
+
+.select-station-btn {
+    background-color: #f68b1e;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.select-station-btn:hover {
+    background-color: #e67e00;
+}
+
+@media screen and (max-width: 768px) {
+    .pickup-modal-content {
+        width: 95%;
+        margin: 5% auto;
+    }
+}

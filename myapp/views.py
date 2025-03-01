@@ -415,6 +415,7 @@ def checkout_view(request):
             'name': pickup_station.name,
             'location_details': pickup_station.details
         },
+        'pickup_stations': PickupStation.objects.all(),  # Pass all pickup stations here
         'shipments': shipments,
         'items_total': order.get_cart_total,  # No parentheses
         'order_total': order.get_order_total,  # No parentheses
@@ -424,6 +425,31 @@ def checkout_view(request):
     
     return render(request, 'checkout2.html', context)
 
+from django.views.decorators.http import require_POST
+import json
+@login_required
+@require_POST
+def update_pickup_station(request):
+    try:
+        data = json.loads(request.body)
+        station_id = data.get('station_id')
+        
+        user = request.user
+        # Get the user's pending order
+        order = Order.objects.get(user=user, status='pending')
+        
+        # Update the pickup station
+        pickup_station = PickupStation.objects.get(id=station_id)
+        order.pickup_station = pickup_station
+        order.save()
+        
+        return JsonResponse({
+            'success': True,
+            'station_name': pickup_station.name,
+            'station_details': pickup_station.details
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
 
 @login_required
 def pay_view(request):

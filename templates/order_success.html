@@ -4,6 +4,17 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/success.css' %}">
+<script src="{% static 'js/messsage.js' %}"></script>
+
+{% if messages %}
+<div class="message-container">
+    {% for message in messages %}
+    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 
 <div class="success-container">
   <div class="success-card">
@@ -17,8 +28,10 @@
     <p>Your operation has been completed successfully.</p>
     <div class="success-actions">
       <a href="{% url 'home' %}" class="btn-primary">Back to Home</a>
-      <a href="javascript:history.back()" class="btn-secondary">Go Back</a>
+     
     </div>
   </div>
 </div>
+
+<script src="{% static 'js/messsage.js' %}"></script>
 {% endblock %}
