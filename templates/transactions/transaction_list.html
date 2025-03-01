@@ -30,7 +30,7 @@
                 <tbody>
                     {% for transaction in transactions %}
                     <tr>
-                        <td>#{{ transaction.id }}</td>
+                        <td>#{{ transaction.transaction_id }}</td>
                         <td>{{ transaction.order.order_id }}</td>
                         <td>KES {{ transaction.amount }}</td>
                         <td>{{ transaction.timestamp|date:"M d, Y" }}</td>
@@ -40,7 +40,7 @@
                             </span>
                         </td>
                         <td>
-                            <a href="{% url 'transaction_detail' transaction.id %}" class="btn-view">
+                            <a href="{% url 'transaction_detail' transaction.transaction_id %}" class="btn-view">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle>

@@ -433,6 +433,12 @@ class OrderItem(models.Model):
 
 
 
+import random
+import string
+from django.db import models
+from django.utils import timezone
+
+
 class Transaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     order = models.ForeignKey('Order', on_delete=models.CASCADE)
@@ -443,6 +449,7 @@ class Transaction(models.Model):
     status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('completed', 'Completed')], default='pending')
     timestamp = models.DateTimeField(auto_now_add=True)
     pickup_station = models.ForeignKey(PickupStation, on_delete=models.SET_NULL, null=True, blank=True)
+    transaction_id = models.CharField(max_length=10, unique=True, blank=True, null=True)  # New field for alphanumeric ID
 
     def get_order_items_display(self):
         items = self.order.items.all()
@@ -451,7 +458,18 @@ class Transaction(models.Model):
         
         item_strings = [f"{item.quantity} x {item.product.name}" for item in items]
         return ", ".join(item_strings)
-    
+
+    def generate_transaction_id(self):
+        """Generate a random 10-character alphanumeric string."""
+        return ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+
+    def save(self, *args, **kwargs):
+        # Automatically generate transaction ID if it's not already set
+        if not self.transaction_id:
+            self.transaction_id = self.generate_transaction_id()
+        
+        super().save(*args, **kwargs)  # Call the real save() method to save the model
+
     def __str__(self):
         items_summary = self.get_order_items_display()
-        return f"Transaction {self.id} - {self.user.username} ({items_summary})"
+        return f"Transaction {self.transaction_id} - {self.user.username} ({items_summary})"

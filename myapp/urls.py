@@ -49,6 +49,6 @@ urlpatterns = [
     ## Other URL patterns admin urls
     
     path('transactions/', views.transaction_list, name='transaction_list'),
-    path('transactions/<int:transaction_id>/', views.transaction_detail, name='transaction_detail'),
+    path('transactions/<str:transaction_id>/', views.transaction_detail, name='transaction_detail'),
 
 ]

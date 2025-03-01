@@ -10,7 +10,7 @@
 <div class="container">
     <div class="transaction-card">
         <div class="transaction-card-header">
-            <h2>Transaction #{{ transaction.id }}</h2>
+            <h2>Transaction #{{ transaction.transaction_id  }}</h2>
             <span class="transaction-badge {% if transaction.status == 'completed' %}badge-completed{% else %}badge-pending{% endif %}">
                 {{ transaction.status|title }}
             </span>

@@ -775,10 +775,10 @@ def transaction_detail(request, transaction_id):
     """View to display details of a specific transaction"""
     # For staff/admin, allow viewing any transaction
     if request.user.is_staff:
-        transaction = get_object_or_404(Transaction, id=transaction_id)
+        transaction = get_object_or_404(Transaction, transaction_id=transaction_id)
     # For regular users, only allow viewing their own transactions
     else:
-        transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user)
+        transaction = get_object_or_404(Transaction, transaction_id=transaction_id, user=request.user)
     
     # Get the order associated with this transaction
     order = transaction.order
