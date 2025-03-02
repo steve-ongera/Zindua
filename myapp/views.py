@@ -395,7 +395,9 @@ def checkout_view(request):
         }
     )
     order.pickup_station = pickup_station
-    order.delivery_fee = 461
+    #order.delivery_fee = 461
+    order.delivery_fee = pickup_station.delivery_fee  # Set delivery fee dynamically from pickup station
+    
     order.save()
     
     # Phone display
@@ -415,6 +417,7 @@ def checkout_view(request):
             'name': pickup_station.name,
             'location_details': pickup_station.details
         },
+         'delivery_fee': order.delivery_fee,  # Ensure this is included
         'pickup_stations': PickupStation.objects.all(),  # Pass all pickup stations here
         'shipments': shipments,
         'items_total': order.get_cart_total,  # No parentheses
@@ -426,29 +429,53 @@ def checkout_view(request):
     return render(request, 'checkout2.html', context)
 
 from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 import json
+from .models import Order, PickupStation
+
 @login_required
 @require_POST
 def update_pickup_station(request):
     try:
+        # Get the station_id from the request
         data = json.loads(request.body)
         station_id = data.get('station_id')
         
         user = request.user
+        
         # Get the user's pending order
         order = Order.objects.get(user=user, status='pending')
         
-        # Update the pickup station
-        pickup_station = PickupStation.objects.get(id=station_id)
-        order.pickup_station = pickup_station
-        order.save()
+        # Get the pickup station from the database
+        pickup_station = get_object_or_404(PickupStation, id=station_id)
         
+        # Update the pickup station for the order
+        order.pickup_station = pickup_station
+        order.delivery_fee = pickup_station.delivery_fee  # Update delivery fee
+        order.save()
+
+        # Get the total price of cart items
+        items_total = order.get_cart_total  # Ensure this method exists in your Order model
+
+        # Calculate new total
+        order_total = items_total + order.delivery_fee
+
+        # Save the recalculated total to the order
+        order.total_price = order_total
+        order.save()
+
+        # Return updated details
         return JsonResponse({
             'success': True,
             'station_name': pickup_station.name,
-            'station_details': pickup_station.details
+            'station_details': pickup_station.details,
+            'new_delivery_fee': order.delivery_fee,  
+            'order_total': order_total,  # Correct total order sum
         })
+    
     except Exception as e:
+        # If any error occurs, return a failure response
         return JsonResponse({'success': False, 'error': str(e)})
 
 @login_required

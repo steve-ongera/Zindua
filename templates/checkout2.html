@@ -199,6 +199,20 @@
                         .then(data => {
                             if (data.success) {
                                 console.log('Pickup station updated successfully');
+                                
+                                // Update the displayed delivery fee
+                                const newDeliveryFee = data.new_delivery_fee;
+                                document.querySelector('.summary-row:nth-child(2) .price').textContent = `KSh ${newDeliveryFee}`;
+
+                                // Recalculate and update the total
+                                // Update order total directly from the response
+                                const newTotal = parseFloat(data.order_total);
+                                document.querySelector('.summary-row.total .price').textContent = `KSh ${newTotal.toFixed(0)}`;
+
+                                
+                                // Optionally, update other parts of the page with the new station details
+                                document.querySelector('.station-details').innerHTML = 
+                                    `<strong>${data.station_name}</strong><br>${data.station_details}`;
                             } else {
                                 console.error('Error updating pickup station');
                             }
@@ -226,6 +240,7 @@
                     
                 });
             </script>
+            
 
             <div class="shipment-container">
                 {% for shipment in shipments %}
