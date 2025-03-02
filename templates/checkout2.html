@@ -69,7 +69,7 @@
                 <span class="step-number"> 2. DELIVERY DETAILS</span>
             </div>
             <div class="change-link">
-                <a href="#">Change <i class="fas fa-chevron-right"></i></a>
+                <a href="#" id="changePickupBtn">Change <i class="fas fa-chevron-right"></i></a>
             </div>
         </div>
         
@@ -82,9 +82,7 @@
             <div class="station-details">
                 <div class="station-header">
                     <h4>Pickup Station</h4>
-                    <div class="change-link">
-                        <a href="#"  id="changePickupBtn" >Change <i class="fas fa-chevron-right"></i></a>
-                    </div>
+                   
                 </div>
                 <div class="station-address">
                     <p><strong> {{ pickup_station.name }}</strong></p>
@@ -253,7 +251,7 @@
                     <div class="shipment-details">
                         <div class="pickup-info">
                             <h4>Pick-up Station</h4>
-                            <p>Delivery {% if shipment.scheduled %}scheduled on{% else %}between{% endif %} {{ shipment.delivery_date }}</p>
+                            <p>Delivery {% if shipment.scheduled %}scheduled on{% else %}between{% endif %} {{ delivery_start_date }} and {{ delivery_end_date }}</p>
                             
                             <div class="product-item">
                                 <img src="{{ shipment.product.image.url }}" alt="{{ shipment.product.name }}">

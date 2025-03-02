@@ -316,6 +316,9 @@ def remove_from_cart(request, item_id):
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Cart, CartItem, Order, OrderItem, PickupStation
+from django.utils.timezone import now
+from datetime import timedelta
+import datetime
 
 @login_required
 def checkout_view(request):
@@ -343,6 +346,20 @@ def checkout_view(request):
     
     # Clear cart after moving items to order
     #cart_items.delete()
+
+    # Calculate delivery date (3-2 days after order but not on weekends)
+    def calculate_delivery_date(order_date):
+        delivery_date = order_date + timedelta(days=2)  # Default to 2 days after
+
+        if delivery_date.weekday() in [5, 6]:  # If Saturday (5) or Sunday (6)
+            delivery_date += timedelta(days=(7 - delivery_date.weekday()))  # Move to Monday
+
+        return delivery_date.strftime('%d %B')  # Format as "DD Month"
+
+    # Assign delivery date
+    order_date = datetime.date.today()  # Get current date
+    delivery_start_date = calculate_delivery_date(order_date)
+    delivery_end_date = calculate_delivery_date(order_date + timedelta(days=1))  # One day after
     
     # Group order items by vendor for shipment display
     shipments = []
@@ -350,7 +367,7 @@ def checkout_view(request):
     
     # Example vendors and shipments
     vendors = ['Jumia', 'Prime Classic Investment', 'Blessed GSF']
-    delivery_dates = ['20 February', '21 February and 22 February', '21 February and 22 February']
+    #delivery_dates = ['20 February', '21 February and 22 February', '21 February and 22 February']
     
     orderitems = order.items.select_related('vendor').all()  # Ensure vendor is prefetched
 
@@ -411,8 +428,8 @@ def checkout_view(request):
             'phone': phone_display
         },
         'delivery_fee': order.delivery_fee,
-        'delivery_start_date': '20 February',
-        'delivery_end_date': '22 February',
+        #'delivery_start_date': '20 February',
+        #'delivery_end_date': '22 February',
         'pickup_station': {
             'name': pickup_station.name,
             'location_details': pickup_station.details
@@ -422,7 +439,9 @@ def checkout_view(request):
         'shipments': shipments,
         'items_total': order.get_cart_total,  # No parentheses
         'order_total': order.get_order_total,  # No parentheses
-        'total_items': order.get_total_items  # No parentheses
+        'total_items': order.get_total_items,  # No parentheses
+        'delivery_start_date': delivery_start_date,
+        'delivery_end_date': delivery_end_date,
 
     }
     

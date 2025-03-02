@@ -7,6 +7,7 @@ import uuid
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 import random
 import string
+from datetime import timedelta, date
 
 class CustomUserManager(BaseUserManager):
     """ Custom manager for user model where email is the unique identifier """
@@ -384,6 +385,10 @@ class Order(models.Model):
     pickup_station = models.ForeignKey(PickupStation, on_delete=models.SET_NULL, null=True, blank=True)
     
     order_id = models.CharField(max_length=6, unique=True, default='')
+
+    # New fields for delivery dates
+    delivery_start_date = models.DateField(null=True, blank=True)
+    delivery_end_date = models.DateField(null=True, blank=True)
     
     def save(self, *args, **kwargs):
         if not self.order_id:
@@ -393,6 +398,20 @@ class Order(models.Model):
                 if not Order.objects.filter(order_id=new_id).exists():
                     self.order_id = new_id
                     break
+
+        # Calculate delivery dates
+        if not self.delivery_start_date or not self.delivery_end_date:
+            today = date.today()
+            start_date = today + timedelta(days=2)
+            if start_date.weekday() in [5, 6]:  # If Saturday or Sunday
+                start_date += timedelta(days=(7 - start_date.weekday()))  # Move to Monday
+            end_date = start_date + timedelta(days=1)
+            if end_date.weekday() in [5, 6]:  # If weekend, move to Monday
+                end_date += timedelta(days=(7 - end_date.weekday()))
+
+            self.delivery_start_date = start_date
+            self.delivery_end_date = end_date
+
         super().save(*args, **kwargs)
     
     def __str__(self):
@@ -452,6 +471,8 @@ class Transaction(models.Model):
     pickup_station = models.ForeignKey(PickupStation, on_delete=models.SET_NULL, null=True, blank=True)
     transaction_id = models.CharField(max_length=10, unique=True, blank=True, null=True)  # New field for alphanumeric ID
 
+    
+
     def get_order_items_display(self):
         items = self.order.items.all()
         if not items:
@@ -468,9 +489,21 @@ class Transaction(models.Model):
         # Automatically generate transaction ID if it's not already set
         if not self.transaction_id:
             self.transaction_id = self.generate_transaction_id()
+
         
         super().save(*args, **kwargs)  # Call the real save() method to save the model
 
     def __str__(self):
         items_summary = self.get_order_items_display()
         return f"Transaction {self.transaction_id} - {self.user.username} ({items_summary})"
+
+
+    @property
+    def delivery_dates(self):
+        """Fetch delivery start and end dates from the associated order."""
+        if self.order:
+            return {
+                "start_date": self.order.delivery_start_date or "Not Set",
+                "end_date": self.order.delivery_end_date or "Not Set"
+            }
+        return {"start_date": "N/A", "end_date": "N/A"}

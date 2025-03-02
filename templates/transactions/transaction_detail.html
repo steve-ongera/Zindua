@@ -55,6 +55,10 @@
                                 <div class="info-value">{{ order.date_ordered|date:"F d, Y" }}</div>
                             </div>
                             <div class="info-row">
+                                <div class="info-label">Deliver date:</div>
+                                <div class="info-value">{{ order.delivery_start_date|default:"Not Scheduled" }} to {{ order.delivery_end_date|default:"Not Scheduled" }}</p></div>
+                            </div>
+                            <div class="info-row">
                                 <div class="info-label">Order Status:</div>
                                 <div class="info-value">{{ order.get_status_display }}</div>
                             </div>
