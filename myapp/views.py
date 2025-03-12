@@ -15,6 +15,10 @@ from django.shortcuts import render, get_object_or_404
 import random
 from django.db.models import Sum, F
 from django.http import JsonResponse
+from django.contrib import messages
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+import json
 
 
 def register(request):
@@ -58,7 +62,7 @@ def custom_logout(request):
     return redirect('login')  # Redirect to login page after logout
 
 
-@login_required
+
 def home_view(request):
     services_categories = ServiceCategory.objects.all()
     top_providers = ServiceProvider.objects.order_by('-average_rating')[:8]
@@ -92,7 +96,7 @@ def product_list_view(request):
 
     return render(request, 'e-commerce/product_list.html', {'page_obj': page_obj})
 
-@login_required
+
 def product_detail_view(request, slug):
     product = get_object_or_404(Product, slug=slug)
     seller = product.seller  # Assuming Product has a ForeignKey to Seller
@@ -138,9 +142,7 @@ def product_detail_view(request, slug):
     
 
 
-from django.core.paginator import Paginator
-from django.shortcuts import render, get_object_or_404
-from .models import Category, Product
+
 
 def category_view(request, slug):
     category = get_object_or_404(Category, slug=slug)
@@ -168,11 +170,9 @@ def account_view(request):
     user = request.user
     return render(request, 'account.html', {'user': user})
 
-from django.shortcuts import redirect, get_object_or_404
-from django.contrib import messages
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from .models import Product, Cart, CartItem
+
+
+
 
 @login_required
 def add_to_cart(request, product_id):
@@ -447,11 +447,7 @@ def checkout_view(request):
     
     return render(request, 'checkout2.html', context)
 
-from django.views.decorators.http import require_POST
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
-import json
-from .models import Order, PickupStation
+
 
 @login_required
 @require_POST
