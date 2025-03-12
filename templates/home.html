@@ -352,18 +352,23 @@
             <div class="products-slider">
                 {% for product in top_sold_products %}
                 <div class="product-card">
-                    <div class="discount-tag">-{{ product.discount_percentage}}%</div>
-                    <a href="{% url 'product_detail' product.slug %}">
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                        <div class="product-info">
-                            <h3>{{ product.name }}</h3>
-                            <div class="price">
-                                <span class="current-price">KSh {{ product.price }}</span>
-                                <span class="original-price">KSh {{ product.original_price}}</span>
-                            </div>
-                            <div class="items-left">{{ product.stock}} items left</div>
+                    {% if product.discount_percentage %}
+                    <div class="discount-tag">-{{ product.discount_percentage }}%</div>
+                    {% endif %}
+                    <div class="product-card-image">
+                        <a href="{% url 'product_detail' product.slug %}">
+                          <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        </a>
+                    </div>
+                    <div class="product-card-info">
+                     <a href="{% url 'product_detail' product.slug %}"  class="product-card-name">{{ product.name}}</a>
+                        <div class="price">
+                            <span class="current-price">KSh {{ product.price }}</span>
+                            {% if product.original_price %}
+                            <span class="original-price">KSh {{ product.original_price }}</span>
+                            {% endif %}
                         </div>
-                    </a>    
+                    </div>
                 </div>
                 {% endfor %}
             </div>
@@ -375,22 +380,23 @@
             <div class="products-grid">
                 {% for product in sponsored_products %}
                 <div class="product-card">
-                    <div class="discount-tag">-{{ product.discount_percentage}}%</div>
+                    {% if product.discount_percentage %}
+                    <div class="discount-tag">-{{ product.discount_percentage }}%</div>
+                    {% endif %}
                     <div class="product-card-image">
                         <a href="{% url 'product_detail' product.slug %}">
                           <img src="{{ product.image.url }}" alt="{{ product.name }}">
                         </a>
-                      </div>
-                    
-                        
-                        <div class="product-info">
-                            <h3>{{ product.name }}</h3>
-                            <div class="price">
-                                <span class="current-price">ksh {{ product.price }}</span>
-                                <span class="original-price">ksh {{ product.original_price }}</span>
-                            </div>
+                    </div>
+                    <div class="product-card-info">
+                     <a href="{% url 'product_detail' product.slug %}"  class="product-card-name">{{ product.name}}</a>
+                        <div class="price">
+                            <span class="current-price">KSh {{ product.price }}</span>
+                            {% if product.original_price %}
+                            <span class="original-price">KSh {{ product.original_price }}</span>
+                            {% endif %}
                         </div>
-                    
+                    </div>
                 </div>
                 {% endfor %}
                 

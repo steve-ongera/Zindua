@@ -111,49 +111,25 @@
         <div class="product-grid">
           {% if page_obj %}
              {% for product in page_obj %}
-              <div class="product-card">
-                  <div class="product-image">
-                      {% if product.warranty %}
-                      <div class="warranty-badge">{{ product.warranty }} WARRANTY</div>
-                      {% endif %}
-                      <a href="{% url 'product_detail' product.slug %}">
-                          <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                      </a>  
-                      <button class="wishlist-btn">❤</button>
-                      {% if product.official_store %}
-                      <div class="store-badge">Official Store</div>
-                      {% endif %}
-                  </div>
-                  <div class="product-info">
-                      <h3 class="product-name">{{ product.name }} </h3>
-                      <div class="product-price">
-                          <span class="current-price">KSh {{ product.price|floatformat:0 }}</span>
-                          {% if product.original_price %}
-                          <div class="price-details">
-                              <span class="original-price">KSh {{ product.original_price|floatformat:0 }}</span>
-                              <span class="discount-percent">-{{ product.discount_percent }}%</span>
-                          </div>
-                          {% endif %}
-                      </div>
-                      <div class="product-rating">
-                          <div class="stars">
-                              {% for i in '12345'|make_list %}
-                              {% if forloop.counter <= product.rating %}
-                              <span class="star filled">★</span>
-                              {% else %}
-                              <span class="star">★</span>
-                              {% endif %}
-                              {% endfor %}
-                          </div>
-                          <span class="review-count">({{ product.total_reviews }})</span>
-                      </div>
-                      <div class="product-seller">
-                          {% if product.express_delivery %}
-                          <img src="{% static 'images/express-badge.png' %}" alt="Express Delivery" class="express-badge">
-                          {% endif %}
-                      </div>
-                  </div>
-              </div>
+             <div class="product-card">
+                {% if product.discount_percentage %}
+                <div class="discount-tag">-{{ product.discount_percentage }}%</div>
+                {% endif %}
+                <div class="product-card-image">
+                    <a href="{% url 'product_detail' product.slug %}">
+                      <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    </a>
+                </div>
+                <div class="product-card-info">
+                 <a href="{% url 'product_detail' product.slug %}"  class="product-card-name">{{ product.name}}</a>
+                    <div class="price">
+                        <span class="current-price">KSh {{ product.price }}</span>
+                        {% if product.original_price %}
+                        <span class="original-price">KSh {{ product.original_price }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
               {% endfor %}
           {% else %}
           <div class="no-products">
