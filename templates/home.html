@@ -376,8 +376,13 @@
                 {% for product in sponsored_products %}
                 <div class="product-card">
                     <div class="discount-tag">-{{ product.discount_percentage}}%</div>
-                    <a href="{% url 'product_detail' product.slug %}">
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    <div class="product-card-image">
+                        <a href="{% url 'product_detail' product.slug %}">
+                          <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        </a>
+                      </div>
+                    
+                        
                         <div class="product-info">
                             <h3>{{ product.name }}</h3>
                             <div class="price">
@@ -385,7 +390,7 @@
                                 <span class="original-price">ksh {{ product.original_price }}</span>
                             </div>
                         </div>
-                    </a>    
+                    
                 </div>
                 {% endfor %}
                 
@@ -542,11 +547,13 @@
                         {% if product.discount_percentage %}
                         <div class="discount-tag">-{{ product.discount_percentage }}%</div>
                         {% endif %}
-                        <a href="{% url 'product_detail' product.slug %}" >
+                        <div class="product-card-image">
+                            <a href="{% url 'product_detail' product.slug %}">
                               <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                        </a>
-                        <div class="product-info">
-                            <h3>{{ product.name|truncatechars:50 }}</h3>
+                            </a>
+                        </div>
+                        <div class="product-card-info">
+                         <a href="{% url 'product_detail' product.slug %}"  class="product-card-name">{{ product.name}}</a>
                             <div class="price">
                                 <span class="current-price">KSh {{ product.price }}</span>
                                 {% if product.original_price %}
@@ -576,15 +583,17 @@
                     {% if product.discount_percentage %}
                     <div class="discount-tag">-{{ product.discount_percentage }}%</div>
                     {% endif %}
-                    <a href="{% url 'product_detail' product.slug %}">
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                    </a>
-                    <div class="product-info">
-                        <h3>{{ product.name|truncatechars:30 }}</h3>
+                    <div class="product-card-image">
+                        <a href="{% url 'product_detail' product.slug %}">
+                          <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        </a>
+                    </div>
+                    <div class="product-card-info">
+                     <a href="{% url 'product_detail' product.slug %}"  class="product-card-name">{{ product.name}}</a>
                         <div class="price">
-                            <span class="current-price">KSh {{ product.price|floatformat:0 }}</span>
+                            <span class="current-price">KSh {{ product.price }}</span>
                             {% if product.original_price %}
-                            <span class="original-price">KSh {{ product.original_price|floatformat:0 }}</span>
+                            <span class="original-price">KSh {{ product.original_price }}</span>
                             {% endif %}
                         </div>
                     </div>
